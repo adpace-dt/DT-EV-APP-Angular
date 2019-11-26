@@ -1,0 +1,21 @@
+#header {
+  display: flex;
+  background: #ffffff;
+  height: 60px;
+
+  img{
+    height: 44px;
+    width: auto;
+    margin: 8px;
+  }
+
+  #header-text {
+    display: flex;
+    flex-grow: 3;
+    background: #00AF66;
+    & h2, h3 {
+      margin: auto;
+      color: white;
+    }
+  }
+}

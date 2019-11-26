@@ -1,0 +1,44 @@
+.parking-spot {
+  border: 3px solid #0067b8;
+  height: 160px;
+  width: 60vw;
+  min-width: 200px;
+  max-width: 300px;
+  background: rgba(0, 0, 0, 0.5);
+
+
+  .car {
+    background-image: url("../../assets/img/car.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 95% auto;
+    width: 100%;
+    height: 100%;
+
+    .info {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+
+      .top {
+
+      }
+
+      .middle {
+        margin: auto;
+        font-size: 56px;
+        transform: translate3d(-20px, 5px, 0);
+      }
+
+      .bottom {
+        margin-top: auto;
+      }
+    }
+  }
+
+  /*  & .car {
+      max-height: 120px;
+      width: 95%;
+    }*/
+
+}

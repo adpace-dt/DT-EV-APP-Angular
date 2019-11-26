@@ -1,0 +1,21 @@
+.main {
+  padding: 8px;
+  display: flex;
+
+  .chargers {
+    display: flex;
+    flex-direction: column;
+    h2 {
+      margin-bottom: auto;
+      text-align: center;
+    }
+  }
+
+  .parking-spots {
+    margin-left: auto;
+    h2 {
+      margin: auto;
+      text-align: center;
+    }
+  }
+}
