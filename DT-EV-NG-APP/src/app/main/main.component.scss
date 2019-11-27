@@ -1,3 +1,40 @@
+.info {
+  text-align: center;
+  background: #0067b8;
+  margin: 0 0 8px;
+  padding: 3px 0;
+}
+.titles {
+  display: flex;
+
+  .chargers-title{
+    text-align: center;
+    width: 40vw;
+  }
+
+  .parking-spots-title {
+    width: 60vw;
+    text-align: center;
+  }
+}
+
+.main-container {
+  display: flex;
+  flex-direction: column;
+
+  .row {
+    display: flex;
+    height: 20vh;
+  }
+
+  .col-40 {
+    width: 40vw;
+  }
+  .col-60 {
+    width: 60vw;
+  }
+}
+
 .main {
   padding: 8px;
   display: flex;

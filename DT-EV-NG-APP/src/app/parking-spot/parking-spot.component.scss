@@ -1,8 +1,9 @@
 .parking-spot {
   border: 3px solid #0067b8;
-  height: 160px;
+  //height: 160px;
+  height: 19vh;
   width: 60vw;
-  min-width: 200px;
+  min-width: 150px;
   max-width: 300px;
   background: rgba(0, 0, 0, 0.5);
 
@@ -11,7 +12,7 @@
     background-image: url("../../assets/img/car.png");
     background-repeat: no-repeat;
     background-position: center;
-    background-size: 95% auto;
+    background-size: 92% auto;
     width: 100%;
     height: 100%;
 
@@ -35,10 +36,5 @@
       }
     }
   }
-
-  /*  & .car {
-      max-height: 120px;
-      width: 95%;
-    }*/
 
 }
