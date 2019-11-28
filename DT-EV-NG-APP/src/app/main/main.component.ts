@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 
 @Component({
   selector: 'app-main',
@@ -7,9 +7,21 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MainComponent implements OnInit {
 
-  constructor() { }
+  chargerOneSlot = 2;
+  chargerTwoSlot = 3;
+  pendingChargerSlot: number = null;
+  parkingSlotOneOccupied = false;
+  parkingSlotTwoOccupied = false;
+  parkingSlotThreeOccupied = false;
+  parkingSlotFourOccupied = false;
+
+  constructor() {
+  }
 
   ngOnInit() {
   }
 
+  chargerClickHandler($event) {
+    this.pendingChargerSlot = $event;
+  }
 }

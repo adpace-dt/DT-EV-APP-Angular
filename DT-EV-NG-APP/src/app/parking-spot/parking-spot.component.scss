@@ -1,5 +1,7 @@
 .parking-spot {
-  border: 3px solid #0067b8;
+  border-bottom: 3px solid #0067b8;
+  border-top: 3px solid #0067b8;
+  border-left: 3px solid #0067b8;
   //height: 160px;
   height: 19vh;
   width: 60vw;
@@ -15,6 +17,11 @@
     background-size: 92% auto;
     width: 100%;
     height: 100%;
+    opacity: 30%;
+
+    &.active {
+      opacity: 100%;
+    }
 
     .info {
       display: flex;

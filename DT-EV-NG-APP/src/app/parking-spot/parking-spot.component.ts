@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import {Component, OnInit, Input} from '@angular/core';
 
 @Component({
   selector: 'app-parking-spot',
@@ -7,9 +7,13 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class ParkingSpotComponent implements OnInit {
 
-  constructor() { }
+  active = false;
+
+  constructor() {
+  }
 
   ngOnInit() {
   }
-@Input() spotNumber: number;
+
+  @Input() spotNumber: number;
 }

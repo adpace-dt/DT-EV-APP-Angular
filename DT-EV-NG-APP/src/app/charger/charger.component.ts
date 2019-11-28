@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
 
 @Component({
   selector: 'app-charger',
@@ -6,10 +6,18 @@ import { Component, OnInit, Input } from '@angular/core';
   styleUrls: ['./charger.component.scss']
 })
 export class ChargerComponent implements OnInit {
+  @Input() chargerNumber: number;
+  @Input() slotNumber: number;
+  @Input() pendingChargerSlot: number;
+  @Output() chargerClickOutput = new EventEmitter<number>();
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit() {
   }
-@Input() chargerNumber: number;
+
+  clickEmitter() {
+    this.chargerClickOutput.emit(this.slotNumber);
+  }
 }

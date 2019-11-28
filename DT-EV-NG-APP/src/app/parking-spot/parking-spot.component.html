@@ -1,5 +1,5 @@
-<div class="parking-spot">
-  <div class="car">
+<div (click)="active = !active" class="parking-spot">
+  <div class="car" [ngClass]="{'active': active}">
     <div class="info">
       <div class="top">info area</div>
       <div class="middle">{{spotNumber}}</div>

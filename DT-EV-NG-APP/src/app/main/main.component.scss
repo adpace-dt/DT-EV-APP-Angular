@@ -4,19 +4,6 @@
   margin: 0 0 8px;
   padding: 3px 0;
 }
-.titles {
-  display: flex;
-
-  .chargers-title{
-    text-align: center;
-    width: 40vw;
-  }
-
-  .parking-spots-title {
-    width: 60vw;
-    text-align: center;
-  }
-}
 
 .main-container {
   display: flex;
@@ -28,31 +15,10 @@
   }
 
   .col-40 {
-    width: 40vw;
+    width: calc(40vw - 3px);
   }
+
   .col-60 {
     width: 60vw;
-  }
-}
-
-.main {
-  padding: 8px;
-  display: flex;
-
-  .chargers {
-    display: flex;
-    flex-direction: column;
-    h2 {
-      margin-bottom: auto;
-      text-align: center;
-    }
-  }
-
-  .parking-spots {
-    margin-left: auto;
-    h2 {
-      margin: auto;
-      text-align: center;
-    }
   }
 }
