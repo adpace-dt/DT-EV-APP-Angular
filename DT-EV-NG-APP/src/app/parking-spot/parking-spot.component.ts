@@ -1,4 +1,4 @@
-import {Component, OnInit, Input} from '@angular/core';
+import {Component, OnInit, Input, EventEmitter, Output} from '@angular/core';
 
 @Component({
   selector: 'app-parking-spot',
@@ -6,8 +6,11 @@ import {Component, OnInit, Input} from '@angular/core';
   styleUrls: ['./parking-spot.component.scss']
 })
 export class ParkingSpotComponent implements OnInit {
+  @Input() spotNumber: number;
+  @Input() pendingChargerSlot;
+  @Output() parkingSpotClickOutput = new EventEmitter<number>();
 
-  active = false;
+  occupied = false;
 
   constructor() {
   }
@@ -15,5 +18,20 @@ export class ParkingSpotComponent implements OnInit {
   ngOnInit() {
   }
 
-  @Input() spotNumber: number;
+  clickEmitter() {
+    if (this.pendingChargerSlot === null) {
+      this.occupied = !this.occupied;
+    } else if (this.pendingChargerSlot) {
+      this.occupied = true;
+      this.parkingSpotClickOutput.emit(this.spotNumber);
+    }
+
+    /*let payload = {
+      spotNumber: this.spotNumber,
+      occupied: this.occupied
+    };*/
+
+  }
+
+
 }
