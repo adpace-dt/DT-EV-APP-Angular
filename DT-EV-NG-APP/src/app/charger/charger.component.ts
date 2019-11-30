@@ -18,9 +18,9 @@ export class ChargerComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (this.pendingChargerSlot === this.slotNumber) {
+    /*if (this.pendingChargerSlot === this.slotNumber) {
       console.log(this.pendingChargerSlot);
-    }
+    }*/
   }
 
   clickEmitter() {
