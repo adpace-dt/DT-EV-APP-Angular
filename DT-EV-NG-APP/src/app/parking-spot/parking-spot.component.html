@@ -1,7 +1,7 @@
 <div (click)="clickEmitter()" class="parking-spot">
   <div class="car" [ngClass]="{'active': occupied}">
     <div class="info">
-      <div class="top">info area</div>
+      <div class="top">Time Left: {{timeLeft}}</div>
       <div class="middle">{{spotNumber}}</div>
       <div class="bottom">bottom info area</div>
     </div>

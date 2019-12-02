@@ -15,6 +15,7 @@
   //transform: scale(0.5);
   width: 15vw;
   padding-left: 5px;
+  max-width: 150px;
 }
 
 .graphic-container {
@@ -26,12 +27,17 @@ h1 {
   text-align: center;
   margin-bottom: -3px;
   transform: translateX(-12vw);
+
+  &.shiftOneLeft {
+    margin-left: -3px;
+  }
 }
 
 img {
   //transform: scale(0.8);
   width: 20vw;
   padding-left: 2vw;
+  max-width: 150px;
 }
 
 @-webkit-keyframes pulse {

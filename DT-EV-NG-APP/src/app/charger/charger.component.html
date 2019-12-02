@@ -1,5 +1,5 @@
 <div class="charger">
-  <h1>{{chargerNumber}}</h1>
+  <h1 [ngClass]="{'shiftOneLeft': chargerNumber === 1}">{{chargerNumber}}</h1>
   <div class="graphic-container" (click)="clickEmitter()">
     <div class="charger-icon"><img [ngClass]="{'animated pulse' : pendingChargerSlot === slotNumber}" class="animated pulse" style="color: white;" src="../../assets/img/charging-station-solid.svg" alt=""></div>
     <div class="arrows">

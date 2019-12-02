@@ -8,6 +8,7 @@ import {Component, OnInit, Input, EventEmitter, Output} from '@angular/core';
 export class ParkingSpotComponent implements OnInit {
   @Input() spotNumber: number;
   @Input() pendingChargerSlot;
+  @Input() timeLeft;
   @Output() parkingSpotClickOutput = new EventEmitter<number>();
 
   occupied = false;
