@@ -9,12 +9,20 @@ export class ChargerComponent implements OnInit, OnChanges {
   @Input() chargerNumber: number;
   @Input() slotNumber: number;
   @Input() pendingChargerSlot: number;
+  @Input() chargerSlotOne: number;
+  @Input() chargerSlotTwo: number;
   @Output() chargerClickOutput = new EventEmitter<object>();
+  showChargingArrows: boolean = null;
 
   constructor() {
   }
 
   ngOnInit() {
+    if(this.chargerSlotOne === this.slotNumber || this.chargerSlotTwo === this.slotNumber) {
+      this.showChargingArrows = true;
+    } else {
+      this.showChargingArrows = false;
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {

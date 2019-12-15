@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import * as moment from 'moment';
 import {Subject, BehaviorSubject, Observable} from "rxjs";
 import {interval, timer} from "rxjs";
-import { take} from "rxjs/operators";
+import {take} from "rxjs/operators";
 
 @Component({
   selector: 'app-main',
@@ -35,19 +35,13 @@ export class MainComponent implements OnInit {
   constructor() {
   }
 
-  mySubject$;
-
   ngOnInit(): void {
-    this.mySubject$ = new BehaviorSubject(0);
-    this.mySubject$.next(this.currentTime);
     timer(0, 1000)
       .subscribe(() => {
         let time = moment();
         let end = moment(this.currentTime).add(3, 'hours');
         let duration = moment.duration(time.diff(end));
-        // let seconds = duration.asSeconds();
-        // let remaining = Math.abs(duration.hours()) + ':' + Math.abs(duration.minutes()) + ':' + Math.abs(duration.seconds())
-        this.slotOneTimeLeft$ = Math.abs(duration.hours()) + ':' + Math.abs(duration.minutes()) + ':' + Math.abs(duration.seconds());
+        this.slotOneTimeLeft$ = Math.abs(duration.hours()) + ':' + Math.abs(duration.minutes()) + ':' + (Math.abs(duration.seconds()) < 10 ? '0' + Math.abs(duration.seconds()) : Math.abs(duration.seconds()));
       });
   }
 
@@ -70,9 +64,9 @@ export class MainComponent implements OnInit {
           if (this.slotFourChargerNumber === chargerNumber) {
             this.slotFourChargerNumber = null;
           }
-          chargerNumber === 1 ? this.chargerOneSlot = slot : this.chargerTwoSlot = slot
+          chargerNumber === 1 ? this.chargerOneSlot = slot : this.chargerTwoSlot = slot;
           this.resetPendingCharger()
-        } else console.log('slot not empty');
+        } else console.error('slot not empty');
       }
 
       if (slot === 2) {
@@ -89,7 +83,7 @@ export class MainComponent implements OnInit {
           }
           chargerNumber === 1 ? this.chargerOneSlot = slot : this.chargerTwoSlot = slot
           this.resetPendingCharger()
-        } else console.log('slot not empty');
+        } else console.error('slot not empty');
       }
 
       if (slot === 3) {
@@ -106,7 +100,7 @@ export class MainComponent implements OnInit {
           }
           chargerNumber === 1 ? this.chargerOneSlot = slot : this.chargerTwoSlot = slot
           this.resetPendingCharger()
-        } else console.log('slot not empty');
+        } else console.error('slot not empty');
       }
 
       if (slot === 4) {
@@ -123,7 +117,7 @@ export class MainComponent implements OnInit {
           }
           chargerNumber === 1 ? this.chargerOneSlot = slot : this.chargerTwoSlot = slot
           this.resetPendingCharger()
-        } else console.log('slot not empty');
+        } else console.error('slot not empty');
       }
 
     }
@@ -141,47 +135,7 @@ export class MainComponent implements OnInit {
     }
   }
 
-  parkingSpotClickHandler($event) {
-    if (this.pendingChargerNumber === 1) {
-      switch ($event) {
-        case 1 : {
-          this.setCharger(1, 1)
-          break;
-        }
-        case 2 : {
-          this.setCharger(1, 2);
-          break;
-        }
-        case 3 : {
-          this.setCharger(1, 3);
-          break;
-        }
-        case 4 : {
-          this.setCharger(1, 4);
-          break;
-        }
-      }
-    } else {
-      switch ($event) {
-        case 1 : {
-          this.setCharger(2, 1);
-          break;
-        }
-        case 2 : {
-          this.setCharger(2, 2);
-          break;
-        }
-        case 3 : {
-          this.setCharger(2, 3);
-          break;
-        }
-        case 4 : {
-          this.setCharger(2, 4);
-          break;
-        }
-      }
-    }
-
-    this.resetPendingCharger()
+  parkingSpotClickHandler(slotNumber){
+    this.setCharger(this.pendingChargerNumber, slotNumber)
   }
 }
