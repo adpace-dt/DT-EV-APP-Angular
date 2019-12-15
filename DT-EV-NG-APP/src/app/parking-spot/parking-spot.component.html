@@ -1,8 +1,9 @@
 <div (click)="clickEmitter()" class="parking-spot">
   <div class="car" [ngClass]="{'active': occupied}">
     <div class="info">
-      <div class="top" *ngIf="!occupied">Spot Available</div>
-      <div class="top"><span *ngIf="timeLeft && occupied">Time Left: {{timeLeft | async}}</span><span *ngIf="!timeLeft && occupied">display time parked</span></div>
+      <div class="top" *ngIf="!occupied">SPOT AVAILABLE</div>
+      <div class="top" *ngIf="occupied && !timeLeft">Parked @ {{parkedTimestamp}}</div>
+      <div class="top" *ngIf="timeLeft && occupied">Time Left: {{timeLeft}}</div>
       <div class="middle">{{spotNumber}}</div>
       <div class="bottom">bottom info area</div>
     </div>
