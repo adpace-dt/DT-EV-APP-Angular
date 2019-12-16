@@ -2,7 +2,7 @@
   <h1 [ngClass]="{'shiftOneLeft': chargerNumber === 1}">{{chargerNumber}}</h1>
   <div class="graphic-container" (click)="clickEmitter()">
     <div class="charger-icon"><img [ngClass]="{'animated pulse' : pendingChargerSlot === slotNumber}" class="animated pulse" style="color: white;" src="../../assets/img/charging-station-solid.svg" alt=""></div>
-    <div class="arrows" *ngIf="showChargingArrows">
+    <div class="arrows" *ngIf="pendingChargerSlot !== slotNumber">
       <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 442.03 320.08">
         <defs>
           <style>.cls-1 {

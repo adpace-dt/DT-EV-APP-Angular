@@ -18,7 +18,7 @@ export class ChargerComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
-    if(this.chargerSlotOne === this.slotNumber || this.chargerSlotTwo === this.slotNumber) {
+    if(this.pendingChargerSlot !== this.slotNumber) {
       this.showChargingArrows = true;
     } else {
       this.showChargingArrows = false;
