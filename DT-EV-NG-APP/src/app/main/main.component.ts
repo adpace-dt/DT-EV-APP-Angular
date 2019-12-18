@@ -10,13 +10,13 @@ import {timer} from 'rxjs';
 })
 export class MainComponent implements OnInit {
 
-  chargerOneSlot = 2;
-  chargerTwoSlot = 3;
+  chargerOneSlot = 0;
+  chargerTwoSlot = 0;
   pendingChargerSlot: number = null;
   pendingChargerNumber: number = null;
   slotOneChargerNumber: number = null;
-  slotTwoChargerNumber: number = 1;
-  slotThreeChargerNumber: number = 2;
+  slotTwoChargerNumber = 1;
+  slotThreeChargerNumber = 2;
   slotFourChargerNumber: number = null;
   slotOneTimeLeft: string;
   slotTwoTimeLeft: string;
@@ -146,7 +146,7 @@ export class MainComponent implements OnInit {
       }
 
       if (slot === 2) {
-        if (this.slotTwoChargerNumber === null) {
+        if (this.slotTwoChargerNumber === null || this.chargerOneSlot === 0) {
           this.slotTwoChargerNumber = chargerNumber;
           this.setStartTime(slot);
           if (this.slotOneChargerNumber === chargerNumber) {
@@ -166,7 +166,7 @@ export class MainComponent implements OnInit {
       }
 
       if (slot === 3) {
-        if (this.slotThreeChargerNumber === null) {
+        if (this.slotThreeChargerNumber === null || this.chargerTwoSlot === 0) {
           this.slotThreeChargerNumber = chargerNumber;
           this.setStartTime(slot);
           if (this.slotOneChargerNumber === chargerNumber) {
