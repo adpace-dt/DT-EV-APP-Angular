@@ -9,8 +9,8 @@ export class ChargerComponent implements OnInit, OnChanges {
   @Input() chargerNumber: number;
   @Input() slotNumber: number;
   @Input() pendingChargerSlot: number;
-  @Input() chargerSlotOne: number;
-  @Input() chargerSlotTwo: number;
+  @Input() chargerOneSlot: number;
+  @Input() chargerTwoSlot: number;
   @Input() timeLeft: any;
   @Output() chargerClickOutput = new EventEmitter<object>();
   showChargingArrows: boolean = null;
@@ -22,11 +22,20 @@ export class ChargerComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(this.timeLeft);
+    const chargerActive = () => {
+      if (this.chargerNumber === 1) {
+        // check if charger is set to initialization of default (0) /not charging
+        return this.chargerOneSlot !== 0;
+      } else {
+        return this.chargerTwoSlot !== 0;
+      }
+    };
+    this.showChargingArrows = this.pendingChargerSlot !== this.slotNumber
+      && chargerActive();
   }
 
   clickEmitter() {
-    let payload = {
+    const payload = {
       slotNumber: this.slotNumber,
       chargerNumber: this.chargerNumber
     };

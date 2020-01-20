@@ -79,7 +79,7 @@ export class MainComponent implements OnInit {
             this.slotOneTimeLeft =
               (Math.abs(duration.hours()) > 0 ? Math.abs(duration.hours()) + ':' : '')
               + (Math.abs(duration.minutes()) > 0 ? Math.abs(duration.minutes()) + ':' : '')
-              + (Math.abs(duration.seconds()) < 10 ? '0' + Math.abs(duration.seconds()) : Math.abs(duration.seconds()))
+              + (Math.abs(duration.seconds()) < 10 ? '0' + Math.abs(duration.seconds()) : Math.abs(duration.seconds()));
           });
         break;
 
@@ -92,7 +92,7 @@ export class MainComponent implements OnInit {
             this.slotTwoTimeLeft =
               (Math.abs(duration.hours()) > 0 ? Math.abs(duration.hours()) + ':' : '')
               + (Math.abs(duration.minutes()) > 0 ? Math.abs(duration.minutes()) + ':' : '')
-              + (Math.abs(duration.seconds()) < 10 ? '0' + Math.abs(duration.seconds()) : Math.abs(duration.seconds()))
+              + (Math.abs(duration.seconds()) < 10 ? '0' + Math.abs(duration.seconds()) : Math.abs(duration.seconds()));
           });
         break;
 
@@ -158,7 +158,7 @@ export class MainComponent implements OnInit {
           if (this.slotFourChargerNumber === chargerNumber) {
             this.slotFourChargerNumber = null;
           }
-          chargerNumber === 1 ? this.chargerOneSlot = slot : this.chargerTwoSlot = slot
+          chargerNumber === 1 ? this.chargerOneSlot = slot : this.chargerTwoSlot = slot;
           this.resetPendingCharger();
         } else {
           console.error('slot not empty');
@@ -178,8 +178,8 @@ export class MainComponent implements OnInit {
           if (this.slotFourChargerNumber === chargerNumber) {
             this.slotFourChargerNumber = null;
           }
-          chargerNumber === 1 ? this.chargerOneSlot = slot : this.chargerTwoSlot = slot
-          this.resetPendingCharger()
+          chargerNumber === 1 ? this.chargerOneSlot = slot : this.chargerTwoSlot = slot;
+          this.resetPendingCharger();
         } else {
           console.error('slot not empty');
         }
@@ -198,8 +198,8 @@ export class MainComponent implements OnInit {
           if (this.slotThreeChargerNumber === chargerNumber) {
             this.slotThreeChargerNumber = null;
           }
-          chargerNumber === 1 ? this.chargerOneSlot = slot : this.chargerTwoSlot = slot
-          this.resetPendingCharger()
+          chargerNumber === 1 ? this.chargerOneSlot = slot : this.chargerTwoSlot = slot;
+          this.resetPendingCharger();
         } else {
           console.error('slot not empty');
         }
@@ -220,9 +220,14 @@ export class MainComponent implements OnInit {
     }
   }
 
-  parkingSpotClickHandler(slotNumber) {
+  // parkingSpotClickHandler(slotNumber, disconnect, chargerNumber) {
+  parkingSpotClickHandler(payload) {
+    console.log(payload);
+    if (payload.disconnect) {
+      this.setCharger(payload.chargerNumber, 0);
+    }
     this.resetChargerStartTimestamp();
-    this.setCharger(this.pendingChargerNumber, slotNumber);
+    this.setCharger(this.pendingChargerNumber, payload.spot);
   }
 
   resetChargerStartTimestamp() {
