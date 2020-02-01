@@ -49,6 +49,44 @@ export class MainComponent implements OnInit {
     this.pendingChargerNumber = null;
   }
 
+// left off working on resetting charger when car pulls out of spot
+  resetDefaultCharger(chargerNumber) {
+    if (chargerNumber === 1) {
+      switch (this.chargerOneSlot) {
+        case 1:
+          this.slotOneChargerNumber = null;
+          this.setDefaultSlot(chargerNumber);
+          break;
+        case 2:
+          this.slotTwoChargerNumber = 1;
+          break;
+        case 3:
+          this.setDefaultSlot(chargerNumber);
+          break;
+        case 4:
+          this.slotFourChargerNumber = null;
+          this.setDefaultSlot(chargerNumber);
+
+      }
+    }
+  }
+
+  setDefaultSlot(chargerNumber) {
+    if (chargerNumber === 1) {
+      if (this.slotTwoChargerNumber === 2) {
+        this.slotThreeChargerNumber = 1;
+      } else {
+        this.slotTwoChargerNumber = 1;
+      }
+    } else {
+      if (this.slotThreeChargerNumber === 2) {
+        this.slotTwoChargerNumber = 2;
+      } else {
+        this.slotThreeChargerNumber = 2;
+      }
+    }
+  }
+
   setStartTime(slot) {
     switch (slot) {
       case 1:
@@ -205,6 +243,18 @@ export class MainComponent implements OnInit {
         }
       }
 
+    } else if (chargerNumber && slot === 0) {
+      // this.resetPendingCharger();
+      if (chargerNumber === 1) {
+        this.chargerOneSlot = 0;
+        if (this.slotTwoChargerNumber === null) {
+          this.slotTwoChargerNumber = 1;
+        } else {
+          this.slotThreeChargerNumber = 1
+        }
+      } else {
+        this.chargerTwoSlot = 0;
+      }
     }
   }
 
