@@ -49,44 +49,6 @@ export class MainComponent implements OnInit {
     this.pendingChargerNumber = null;
   }
 
-// left off working on resetting charger when car pulls out of spot
-  resetDefaultCharger(chargerNumber) {
-    if (chargerNumber === 1) {
-      switch (this.chargerOneSlot) {
-        case 1:
-          this.slotOneChargerNumber = null;
-          this.setDefaultSlot(chargerNumber);
-          break;
-        case 2:
-          this.slotTwoChargerNumber = 1;
-          break;
-        case 3:
-          this.setDefaultSlot(chargerNumber);
-          break;
-        case 4:
-          this.slotFourChargerNumber = null;
-          this.setDefaultSlot(chargerNumber);
-
-      }
-    }
-  }
-
-  setDefaultSlot(chargerNumber) {
-    if (chargerNumber === 1) {
-      if (this.slotTwoChargerNumber === 2) {
-        this.slotThreeChargerNumber = 1;
-      } else {
-        this.slotTwoChargerNumber = 1;
-      }
-    } else {
-      if (this.slotThreeChargerNumber === 2) {
-        this.slotTwoChargerNumber = 2;
-      } else {
-        this.slotThreeChargerNumber = 2;
-      }
-    }
-  }
-
   setStartTime(slot) {
     switch (slot) {
       case 1:
@@ -161,101 +123,240 @@ export class MainComponent implements OnInit {
 
   }
 
+  setTimerToNull(spot) {
+    switch (spot) {
+      case 1 :
+        this.slotOneStartTimestamp = null;
+        this.slotOneTimeLeft = null;
+        if (this.slotOneTimer$ !== null) {
+          this.slotOneTimer$.unsubscribe();
+        }
+        break;
+      case 2 :
+        this.slotTwoStartTimestamp = null;
+        this.slotTwoTimeLeft = null;
+        if (this.slotTwoTimer$ !== null) {
+          this.slotTwoTimer$.unsubscribe();
+        }
+        break;
+      case 3 :
+        this.slotThreeStartTimestamp = null;
+        this.slotThreeTimeLeft = null;
+        if (this.slotThreeTimer$ !== null) {
+          this.slotThreeTimer$.unsubscribe();
+        }
+        break;
+      case 4 :
+        this.slotFourStartTimestamp = null;
+        this.slotFourTimeLeft = null;
+        if (this.slotFourTimer$ !== null) {
+          this.slotFourTimer$.unsubscribe();
+        }
+        break;
+    }
+  }
+
+  resetChargerStartTimestamp() {
+    if (this.pendingChargerNumber === 1) {
+      switch (this.chargerOneSlot) {
+        case 1:
+          this.setTimerToNull(1);
+          break;
+        case 2:
+          this.setTimerToNull(2);
+          break;
+        case 3:
+          this.setTimerToNull(3);
+          break;
+        case 4:
+          this.setTimerToNull(4);
+          break;
+      }
+    } else {
+      switch (this.chargerTwoSlot) {
+        case 1:
+          this.setTimerToNull(1);
+          break;
+        case 2:
+          this.setTimerToNull(2);
+          break;
+        case 3:
+          this.setTimerToNull(3);
+          break;
+        case 4:
+          this.setTimerToNull(4);
+          break;
+      }
+    }
+  }
+
+  setAllSlotsNull(chargerNumber: number) {
+    // set all slotChargerNumbers to null before setting slot
+    if (this.slotOneChargerNumber === chargerNumber) {
+      this.slotOneChargerNumber = null;
+    }
+    if (this.slotTwoChargerNumber === chargerNumber) {
+      this.slotTwoChargerNumber = null;
+    }
+    if (this.slotThreeChargerNumber === chargerNumber) {
+      this.slotThreeChargerNumber = null;
+    }
+    if (this.slotFourChargerNumber === chargerNumber) {
+      this.slotFourChargerNumber = null;
+    }
+  }
+
   setCharger(chargerNumber, slot) {
-    if (chargerNumber && slot) {
+    if (chargerNumber && (slot || slot === 0)) {
+      // slot === 0 is called for a charger disconnect event
+      if (slot === 0) {
+        this.setAllSlotsNull(chargerNumber);
+        // set the charger to a default slot
+        if (chargerNumber === 1) {
+          this.chargerOneSlot = 0;
+          if (this.slotTwoChargerNumber === 2) {
+            this.slotThreeChargerNumber = 1;
+          } else {
+            this.slotTwoChargerNumber = 1;
+          }
+        } else { // Charger === 2
+          this.chargerTwoSlot = 0;
+          if (this.slotThreeChargerNumber === 1) {
+            this.slotTwoChargerNumber = 2;
+          } else {
+            this.slotThreeChargerNumber = 2;
+          }
+        }
+        this.resetPendingCharger();
+      }
+
       if (slot === 1) {
         if (this.slotOneChargerNumber === null) {
+          this.setAllSlotsNull(chargerNumber);
           this.slotOneChargerNumber = chargerNumber;
           this.setStartTime(slot);
-          if (this.slotTwoChargerNumber === chargerNumber) {
-            this.slotTwoChargerNumber = null;
-          }
-          if (this.slotThreeChargerNumber === chargerNumber) {
-            this.slotThreeChargerNumber = null;
-          }
-          if (this.slotFourChargerNumber === chargerNumber) {
-            this.slotFourChargerNumber = null;
-          }
           chargerNumber === 1 ? this.chargerOneSlot = slot : this.chargerTwoSlot = slot;
           this.resetPendingCharger();
         } else {
-          console.error('slot not empty');
+          console.warn('slot not empty');
         }
       }
 
       if (slot === 2) {
-        if (this.slotTwoChargerNumber === null || this.chargerOneSlot === 0) {
+        // Check if slot is occupied with a charger in default mode
+        if (this.slotTwoChargerNumber !== null && (this.chargerOneSlot === 0 || this.chargerTwoSlot === 0)) {
+          if (chargerNumber === 1) {
+            // if charger 2 is in default state in slot 2, move it to slot 3
+            if (this.chargerTwoSlot === 0 && this.slotTwoChargerNumber === 2) {
+              this.setAllSlotsNull(chargerNumber);
+              this.slotThreeChargerNumber = 2;
+              this.slotTwoChargerNumber = 1;
+              this.chargerOneSlot = 2;
+              this.setStartTime(slot);
+            } else if (this.chargerTwoSlot === 2) {
+              console.warn('slot not empty');
+            } else {
+              this.setAllSlotsNull(chargerNumber);
+              this.slotTwoChargerNumber = 1;
+              this.chargerOneSlot = 2;
+              this.setStartTime(slot);
+            }
+          } else { // chargerNumber === 2
+            if (this.chargerOneSlot === 0 && this.slotTwoChargerNumber === 1) {
+              this.setAllSlotsNull(chargerNumber);
+              this.slotThreeChargerNumber = 1;
+              this.slotTwoChargerNumber = 2;
+              this.chargerTwoSlot = 2;
+              this.setStartTime(slot);
+            } else if (this.chargerOneSlot === 2) {
+              console.warn('slot not empty');
+            } else {
+              this.setAllSlotsNull(chargerNumber);
+              this.slotTwoChargerNumber = 2;
+              this.chargerTwoSlot = 2;
+              this.setStartTime(slot);
+            }
+          }
+        }
+
+        if (this.slotTwoChargerNumber === null) {
+          this.setAllSlotsNull(chargerNumber);
           this.slotTwoChargerNumber = chargerNumber;
           this.setStartTime(slot);
-          if (this.slotOneChargerNumber === chargerNumber) {
-            this.slotOneChargerNumber = null;
-          }
-          if (this.slotThreeChargerNumber === chargerNumber) {
-            this.slotThreeChargerNumber = null;
-          }
-          if (this.slotFourChargerNumber === chargerNumber) {
-            this.slotFourChargerNumber = null;
-          }
           chargerNumber === 1 ? this.chargerOneSlot = slot : this.chargerTwoSlot = slot;
-          this.resetPendingCharger();
         } else {
-          console.error('slot not empty');
+          console.warn('slot not empty');
         }
+        this.resetPendingCharger();
       }
 
       if (slot === 3) {
-        if (this.slotThreeChargerNumber === null || this.chargerTwoSlot === 0) {
+        if (this.slotThreeChargerNumber !== null && (this.chargerOneSlot === 0 || this.chargerTwoSlot === 0)) {
+          if (chargerNumber === 1) {
+            // if charger 2 is in default state in slot 3, move it to slot 2
+            if (this.chargerTwoSlot === 0 && this.slotThreeChargerNumber === 2) {
+              this.setAllSlotsNull(chargerNumber);
+              this.slotTwoChargerNumber = 2;
+              this.slotThreeChargerNumber = 1;
+              this.chargerOneSlot = 3;
+              this.setStartTime(slot);
+            } else if (this.chargerTwoSlot === 3) {
+              console.warn('slot not empty');
+            } else {
+              this.setAllSlotsNull(chargerNumber);
+              this.slotThreeChargerNumber = 1;
+              this.chargerOneSlot = 3;
+              this.setStartTime(slot);
+            }
+          } else { // chargerNumber === 2
+            if (this.chargerOneSlot === 0 && this.slotThreeChargerNumber === 1) {
+              this.setAllSlotsNull(chargerNumber);
+              this.slotTwoChargerNumber = 1;
+              this.slotThreeChargerNumber = 2;
+              this.chargerTwoSlot = 3;
+              this.setStartTime(slot);
+            } else if (this.chargerOneSlot === 3) {
+              console.warn('slot not empty');
+            } else {
+              this.setAllSlotsNull(chargerNumber);
+              this.slotThreeChargerNumber = 2;
+              this.chargerTwoSlot = 3;
+              this.setStartTime(slot);
+            }
+          }
+        } else if (this.slotThreeChargerNumber === null) {
+          // check to see if there is a default charger set in this slot
+          this.setAllSlotsNull(chargerNumber);
           this.slotThreeChargerNumber = chargerNumber;
           this.setStartTime(slot);
-          if (this.slotOneChargerNumber === chargerNumber) {
-            this.slotOneChargerNumber = null;
-          }
-          if (this.slotTwoChargerNumber === chargerNumber) {
-            this.slotTwoChargerNumber = null;
-          }
-          if (this.slotFourChargerNumber === chargerNumber) {
-            this.slotFourChargerNumber = null;
-          }
           chargerNumber === 1 ? this.chargerOneSlot = slot : this.chargerTwoSlot = slot;
-          this.resetPendingCharger();
-        } else {
-          console.error('slot not empty');
         }
+        this.resetPendingCharger();
       }
 
       if (slot === 4) {
         if (this.slotFourChargerNumber === null) {
+          this.setAllSlotsNull(chargerNumber);
           this.slotFourChargerNumber = chargerNumber;
           this.setStartTime(slot);
-          if (this.slotOneChargerNumber === chargerNumber) {
-            this.slotOneChargerNumber = null;
-          }
-          if (this.slotTwoChargerNumber === chargerNumber) {
-            this.slotTwoChargerNumber = null;
-          }
-          if (this.slotThreeChargerNumber === chargerNumber) {
-            this.slotThreeChargerNumber = null;
-          }
           chargerNumber === 1 ? this.chargerOneSlot = slot : this.chargerTwoSlot = slot;
           this.resetPendingCharger();
         } else {
-          console.error('slot not empty');
+          console.warn('slot not empty');
         }
-      }
-
-    } else if (chargerNumber && slot === 0) {
-      // this.resetPendingCharger();
-      if (chargerNumber === 1) {
-        this.chargerOneSlot = 0;
-        if (this.slotTwoChargerNumber === null) {
-          this.slotTwoChargerNumber = 1;
-        } else {
-          this.slotThreeChargerNumber = 1
-        }
-      } else {
-        this.chargerTwoSlot = 0;
       }
     }
+  }
+
+  consoleLogData() {
+    console.log('chargerOneSlot: ', this.chargerOneSlot);
+    console.log('chargerTwoSlot: ', this.chargerTwoSlot);
+    console.log('pendingChargerSlot: : ', this.pendingChargerSlot);
+    console.log('pendingChargerNumber: ', this.pendingChargerNumber);
+    console.log('slotOneChargerNumber: ', this.slotOneChargerNumber);
+    console.log('slotTwoChargerNumber: ', this.slotTwoChargerNumber);
+    console.log('slotThreeChargerNumber: ', this.slotThreeChargerNumber);
+    console.log('slotFourChargerNumber: ', this.slotFourChargerNumber);
   }
 
   chargerClickHandler($event) {
@@ -270,79 +371,20 @@ export class MainComponent implements OnInit {
     }
   }
 
-  // parkingSpotClickHandler(slotNumber, disconnect, chargerNumber) {
   parkingSpotClickHandler(payload) {
-    console.log(payload);
+    console.log('parkingSpotClickHandler(payload):', payload);
     if (payload.disconnect) {
-      this.setCharger(payload.chargerNumber, 0);
-    }
-    this.resetChargerStartTimestamp();
-    this.setCharger(this.pendingChargerNumber, payload.spot);
-  }
 
-  resetChargerStartTimestamp() {
-    if (this.pendingChargerNumber === 1) {
-      switch (this.chargerOneSlot) {
-        case 1:
-          this.slotOneStartTimestamp = null;
-          this.slotOneTimeLeft = null;
-          if (this.slotOneTimer$ !== null) {
-            this.slotOneTimer$.unsubscribe();
-          }
-          break;
-        case 2:
-          this.slotTwoStartTimestamp = null;
-          this.slotTwoTimeLeft = null;
-          if (this.slotTwoTimer$ !== null) {
-            this.slotTwoTimer$.unsubscribe();
-          }
-          break;
-        case 3:
-          this.slotThreeStartTimestamp = null;
-          this.slotThreeTimeLeft = null;
-          if (this.slotThreeTimer$ !== null) {
-            this.slotThreeTimer$.unsubscribe();
-          }
-          break;
-        case 4:
-          this.slotFourStartTimestamp = null;
-          this.slotFourTimeLeft = null;
-          if (this.slotFourTimer$ !== null) {
-            this.slotFourTimer$.unsubscribe();
-          }
-          break;
-      }
+      console.log('set timer to null in spot: ', payload.spot);
+      this.setTimerToNull(payload.spot);
+      this.pendingChargerSlot = payload.spot;
+      this.pendingChargerNumber = payload.chargerNumber;
+      this.setCharger(payload.chargerNumber, 0);
+      payload.chargerNumber === 1 ? this.chargerOneSlot = 0 : this.chargerTwoSlot = 0;
+      this.consoleLogData();
     } else {
-      switch (this.chargerTwoSlot) {
-        case 1:
-          this.slotOneStartTimestamp = null;
-          this.slotOneTimeLeft = null;
-          if (this.slotOneTimer$ !== null) {
-            this.slotOneTimer$.unsubscribe();
-          }
-          break;
-        case 2:
-          this.slotTwoStartTimestamp = null;
-          this.slotTwoTimeLeft = null;
-          if (this.slotTwoTimer$ !== null) {
-            this.slotTwoTimer$.unsubscribe();
-          }
-          break;
-        case 3:
-          this.slotThreeStartTimestamp = null;
-          this.slotThreeTimeLeft = null;
-          if (this.slotThreeTimer$ !== null) {
-            this.slotThreeTimer$.unsubscribe();
-          }
-          break;
-        case 4:
-          this.slotFourStartTimestamp = null;
-          this.slotFourTimeLeft = null;
-          if (this.slotFourTimer$ !== null) {
-            this.slotFourTimer$.unsubscribe();
-          }
-          break;
-      }
+      this.resetChargerStartTimestamp();
+      this.setCharger(this.pendingChargerNumber, payload.spot);
     }
   }
 }

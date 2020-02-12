@@ -8,7 +8,7 @@ import * as moment from 'moment';
 })
 export class ParkingSpotComponent implements OnChanges {
   @Input() spotNumber: number;
-  @Input() pendingChargerSlot;
+  @Input() pendingChargerSlot: number;
   @Input() timeLeft: string;
   @Input() chargerOneSlot: number;
   @Input() chargerTwoSlot: number;

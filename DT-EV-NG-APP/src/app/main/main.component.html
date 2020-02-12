@@ -3,87 +3,103 @@
   <p class="info">TAP CAR TO TOGGLE OCCUPIED.<br>TAP CHARGER THEN CAR TO CHARGE.</p>
   <div class="main-container">
     <div class="row">
-      <div class="col-40"><div *ngIf="chargerOneSlot === 4 || chargerTwoSlot === 4">
-        <app-charger
-          [chargerNumber]="slotFourChargerNumber"
-          [slotNumber]="4"
-          [pendingChargerSlot]="pendingChargerSlot"
-          (chargerClickOutput)="chargerClickHandler($event)"
-        [chargerOneSlot]="chargerOneSlot"
-        [chargerTwoSlot]="chargerTwoSlot"
-          [timeLeft]="slotFourTimeLeft"
-        ></app-charger></div></div>
+      <div class="col-40">
+        <div *ngIf="slotFourChargerNumber">
+          <app-charger
+            [chargerNumber]="slotFourChargerNumber"
+            [slotNumber]="4"
+            [pendingChargerSlot]="pendingChargerSlot"
+            (chargerClickOutput)="chargerClickHandler($event)"
+            [chargerOneSlot]="chargerOneSlot"
+            [chargerTwoSlot]="chargerTwoSlot"
+            [timeLeft]="slotFourTimeLeft"
+          ></app-charger>
+        </div>
+      </div>
       <div class="col-60">
         <app-parking-spot
-        [spotNumber]="4"
-        [chargerOneSlot]="chargerOneSlot"
-        [chargerTwoSlot]="chargerTwoSlot"
-        [pendingChargerSlot]="pendingChargerSlot"
-        (parkingSpotClickOutput)="parkingSpotClickHandler($event)"
-        [timeLeft]="slotFourTimeLeft"></app-parking-spot></div>
+          [spotNumber]="4"
+          [chargerOneSlot]="chargerOneSlot"
+          [chargerTwoSlot]="chargerTwoSlot"
+          [pendingChargerSlot]="pendingChargerSlot"
+          (parkingSpotClickOutput)="parkingSpotClickHandler($event)"
+          [timeLeft]="slotFourTimeLeft"></app-parking-spot>
+      </div>
     </div>
 
     <div class="row">
-      <div class="col-40"><div *ngIf="chargerOneSlot === 3 || chargerTwoSlot === 3 || chargerTwoSlot === 0">
-        <app-charger
-          [chargerNumber]="slotThreeChargerNumber"
-          [slotNumber]="3"
-          [pendingChargerSlot]="pendingChargerSlot"
-          (chargerClickOutput)="chargerClickHandler($event)"
-        [chargerOneSlot]="chargerOneSlot"
-        [chargerTwoSlot]="chargerTwoSlot"
-          [timeLeft]="slotThreeTimeLeft"
-        ></app-charger></div></div>
+      <div class="col-40">
+        <div *ngIf="slotThreeChargerNumber">
+          <app-charger
+            [chargerNumber]="slotThreeChargerNumber"
+            [slotNumber]="3"
+            [pendingChargerSlot]="pendingChargerSlot"
+            (chargerClickOutput)="chargerClickHandler($event)"
+            [chargerOneSlot]="chargerOneSlot"
+            [chargerTwoSlot]="chargerTwoSlot"
+            [timeLeft]="slotThreeTimeLeft"
+          ></app-charger>
+        </div>
+      </div>
       <div class="col-60">
         <app-parking-spot
-        [spotNumber]="3"
-        [chargerOneSlot]="chargerOneSlot"
-        [chargerTwoSlot]="chargerTwoSlot"
-        [pendingChargerSlot]="pendingChargerSlot"
-        (parkingSpotClickOutput)="parkingSpotClickHandler($event)"
-        [timeLeft]="slotThreeTimeLeft"></app-parking-spot></div>
+          [spotNumber]="3"
+          [chargerOneSlot]="chargerOneSlot"
+          [chargerTwoSlot]="chargerTwoSlot"
+          [pendingChargerSlot]="pendingChargerSlot"
+          (parkingSpotClickOutput)="parkingSpotClickHandler($event)"
+          [timeLeft]="slotThreeTimeLeft"></app-parking-spot>
+      </div>
     </div>
 
     <div class="row">
-      <div class="col-40"><div *ngIf="chargerOneSlot === 2 || chargerTwoSlot === 2 || chargerOneSlot === 0">
-        <app-charger
-          [chargerNumber]="slotTwoChargerNumber"
-          [slotNumber]="2"
-          [pendingChargerSlot]="pendingChargerSlot"
-          (chargerClickOutput)="chargerClickHandler($event)"
-        [chargerOneSlot]="chargerOneSlot"
-        [chargerTwoSlot]="chargerTwoSlot"
-          [timeLeft]="slotTwoTimeLeft"
-        ></app-charger></div></div>
+      <div class="col-40">
+        <div *ngIf="slotTwoChargerNumber">
+          <app-charger
+            [chargerNumber]="slotTwoChargerNumber"
+            [slotNumber]="2"
+            [pendingChargerSlot]="pendingChargerSlot"
+            (chargerClickOutput)="chargerClickHandler($event)"
+            [chargerOneSlot]="chargerOneSlot"
+            [chargerTwoSlot]="chargerTwoSlot"
+            [timeLeft]="slotTwoTimeLeft"
+          ></app-charger>
+        </div>
+      </div>
       <div class="col-60">
         <app-parking-spot
-        [spotNumber]="2"
-        [chargerOneSlot]="chargerOneSlot"
-        [chargerTwoSlot]="chargerTwoSlot"
-        [pendingChargerSlot]="pendingChargerSlot"
-        (parkingSpotClickOutput)="parkingSpotClickHandler($event)"
-        [timeLeft]="slotTwoTimeLeft"></app-parking-spot></div>
+          [spotNumber]="2"
+          [chargerOneSlot]="chargerOneSlot"
+          [chargerTwoSlot]="chargerTwoSlot"
+          [pendingChargerSlot]="pendingChargerSlot"
+          (parkingSpotClickOutput)="parkingSpotClickHandler($event)"
+          [timeLeft]="slotTwoTimeLeft"></app-parking-spot>
+      </div>
     </div>
 
     <div class="row">
-      <div class="col-40"><div *ngIf="chargerOneSlot === 1 || chargerTwoSlot === 1">
-        <app-charger
-          [chargerNumber]="slotOneChargerNumber"
-          [slotNumber]="1"
-          [pendingChargerSlot]="pendingChargerSlot"
-          (chargerClickOutput)="chargerClickHandler($event)"
-        [chargerOneSlot]="chargerOneSlot"
-        [chargerTwoSlot]="chargerTwoSlot"
-          [timeLeft]="slotOneTimeLeft"
-        ></app-charger></div></div>
+      <div class="col-40">
+        <div *ngIf="slotOneChargerNumber">
+          <app-charger
+            [chargerNumber]="slotOneChargerNumber"
+            [slotNumber]="1"
+            [pendingChargerSlot]="pendingChargerSlot"
+            (chargerClickOutput)="chargerClickHandler($event)"
+            [chargerOneSlot]="chargerOneSlot"
+            [chargerTwoSlot]="chargerTwoSlot"
+            [timeLeft]="slotOneTimeLeft"
+          ></app-charger>
+        </div>
+      </div>
       <div class="col-60">
         <app-parking-spot
-        [spotNumber]="1"
-        [chargerOneSlot]="chargerOneSlot"
-        [chargerTwoSlot]="chargerTwoSlot"
-        [pendingChargerSlot]="pendingChargerSlot"
-        (parkingSpotClickOutput)="parkingSpotClickHandler($event)"
-        [timeLeft]="slotOneTimeLeft"></app-parking-spot></div>
+          [spotNumber]="1"
+          [chargerOneSlot]="chargerOneSlot"
+          [chargerTwoSlot]="chargerTwoSlot"
+          [pendingChargerSlot]="pendingChargerSlot"
+          (parkingSpotClickOutput)="parkingSpotClickHandler($event)"
+          [timeLeft]="slotOneTimeLeft"></app-parking-spot>
+      </div>
     </div>
   </div>
 </div>
