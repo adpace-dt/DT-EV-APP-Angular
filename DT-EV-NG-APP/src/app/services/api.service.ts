@@ -14,12 +14,12 @@ export interface Item {
   providedIn: 'root'
 })
 export class ApiService {
-  private baseURL: string = "https://www.techiediaries.com/api/data.json";
+  private baseURL: string = 'https://www.techiediaries.com/api/data.json';
 
   constructor(private httpClient: HttpClient) {
   }
 
   fetch(): Observable<Item[]> {
-    return <Observable<Item[]>>this.httpClient.get(this.baseURL);
+    return <Observable<Item[]>> this.httpClient.get(this.baseURL);
   }
 }
