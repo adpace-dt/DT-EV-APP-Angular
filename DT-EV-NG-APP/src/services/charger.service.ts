@@ -1,18 +1,12 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Injectable} from '@angular/core';
+import {Observable, Subject, Subscription, timer} from 'rxjs';
 import * as moment from 'moment';
-import {Subject, Subscription} from 'rxjs';
-import {timer} from 'rxjs';
 
-import {ChargerService} from '../../services/charger.service';
-
-@Component({
-  selector: 'app-main',
-  templateUrl: './main.component.html',
-  styleUrls: ['./main.component.scss']
+@Injectable({
+  providedIn: 'root'
 })
-export class MainComponent implements OnInit, OnDestroy {
-  subscription;
-  chargerData$;
+export class ChargerService {
+  private chargerData$ = new Subject<object>();
   chargerOneSlot = 0;
   chargerTwoSlot = 0;
   pendingChargerSlot: number = null;
@@ -21,6 +15,7 @@ export class MainComponent implements OnInit, OnDestroy {
   slotTwoChargerNumber = 1;
   slotThreeChargerNumber = 2;
   slotFourChargerNumber: number = null;
+
   slotOneTimeLeft: string;
   slotTwoTimeLeft: string;
   slotThreeTimeLeft: string;
@@ -34,171 +29,32 @@ export class MainComponent implements OnInit, OnDestroy {
   slotThreeTimer$: Subscription = null;
   slotFourTimer$: Subscription = null;
 
-  // below will be used when refactoring for API's
-  // parkingSlotOneOccupied = false;
-  // parkingSlotTwoOccupied = false;
-  // parkingSlotThreeOccupied = false;
-  // parkingSlotFourOccupied = false;
-  // private pendingChargerSlot$: BehaviorSubject<number>;
-
-  constructor(private chargerService: ChargerService) {
-    this.subscription = this.chargerService.getChargerData()
-      .subscribe(data => this.chargerData$ = data);
+  constructor() {
+    this.setChargerData();
+    console.log(this.chargerData$);
   }
 
-  ngOnDestroy() {
-    this.chargerData$.unsubscribe();
+  getChargerData(): Observable<object> {
+    return this.chargerData$.asObservable();
   }
 
-  ngOnInit(): void {
-    console.log('cl hit from main', this.subscription);
-    // this.chargerData = this.chargerService.getChargerData();
+  setChargerData() {
+    this.chargerData$.next({
+      chargerOneSlot: this.chargerOneSlot,
+      chargerTwoSlot: this.chargerTwoSlot,
+      pendingChargerSlot: this.pendingChargerSlot,
+      pendingChargerNumber: this.pendingChargerNumber,
+      slotOneChargerNumber: this.slotOneChargerNumber,
+      slotTwoChargerNumber: this.slotTwoChargerNumber,
+      slotThreeChargerNumber: this.slotThreeChargerNumber,
+      slotFourChargerNumber: this.slotFourChargerNumber
+    });
+
   }
 
   resetPendingCharger() {
     this.pendingChargerSlot = null;
     this.pendingChargerNumber = null;
-  }
-
-  setStartTime(slot) {
-    switch (slot) {
-      case 1:
-        this.slotOneStartTimestamp = moment();
-        break;
-      case 2:
-        this.slotTwoStartTimestamp = moment();
-        break;
-      case 3:
-        this.slotThreeStartTimestamp = moment();
-        break;
-      case 4:
-        this.slotFourStartTimestamp = moment();
-        break;
-    }
-    this.setTimeLeft(slot);
-  }
-
-  setTimeLeft(slot) {
-    const timer$ = timer(0, 1000);
-    switch (slot) {
-      case 1:
-        this.slotOneTimer$ = timer$
-          .subscribe(() => {
-            const time = moment();
-            const end = moment(this.slotOneStartTimestamp).add(3, 'hours');
-            const duration = moment.duration(time.diff(end));
-            this.slotOneTimeLeft =
-              (Math.abs(duration.hours()) > 0 ? Math.abs(duration.hours()) + ':' : '')
-              + (Math.abs(duration.minutes()) > 0 ? Math.abs(duration.minutes()) + ':' : '')
-              + (Math.abs(duration.seconds()) < 10 ? '0' + Math.abs(duration.seconds()) : Math.abs(duration.seconds()));
-          });
-        break;
-
-      case 2:
-        this.slotTwoTimer$ = timer$
-          .subscribe(() => {
-            const time = moment();
-            const end = moment(this.slotTwoStartTimestamp).add(3, 'hours');
-            const duration = moment.duration(time.diff(end));
-            this.slotTwoTimeLeft =
-              (Math.abs(duration.hours()) > 0 ? Math.abs(duration.hours()) + ':' : '')
-              + (Math.abs(duration.minutes()) > 0 ? Math.abs(duration.minutes()) + ':' : '')
-              + (Math.abs(duration.seconds()) < 10 ? '0' + Math.abs(duration.seconds()) : Math.abs(duration.seconds()));
-          });
-        break;
-
-      case 3:
-        this.slotThreeTimer$ = timer$
-          .subscribe(() => {
-            const time = moment();
-            const end = moment(this.slotThreeStartTimestamp).add(3, 'hours');
-            const duration = moment.duration(time.diff(end));
-            this.slotThreeTimeLeft = (Math.abs(duration.hours()) > 0 ? Math.abs(duration.hours()) + ':' : '')
-              + (Math.abs(duration.minutes()) > 0 ? Math.abs(duration.minutes()) + ':' : '')
-              + (Math.abs(duration.seconds()) < 10 ? '0' + Math.abs(duration.seconds()) : Math.abs(duration.seconds()));
-          });
-        break;
-
-      case 4:
-        this.slotFourTimer$ = timer$
-          .subscribe(() => {
-            const time = moment();
-            const end = moment(this.slotFourStartTimestamp).add(3, 'hours');
-            const duration = moment.duration(time.diff(end));
-            this.slotFourTimeLeft = (Math.abs(duration.hours()) > 0 ? Math.abs(duration.hours()) + ':' : '')
-              + (Math.abs(duration.minutes()) > 0 ? Math.abs(duration.minutes()) + ':' : '')
-              + (Math.abs(duration.seconds()) < 10 ? '0' + Math.abs(duration.seconds()) : Math.abs(duration.seconds()));
-          });
-        break;
-    }
-
-  }
-
-  setTimerToNull(spot) {
-    switch (spot) {
-      case 1 :
-        this.slotOneStartTimestamp = null;
-        this.slotOneTimeLeft = null;
-        if (this.slotOneTimer$ !== null) {
-          this.slotOneTimer$.unsubscribe();
-        }
-        break;
-      case 2 :
-        this.slotTwoStartTimestamp = null;
-        this.slotTwoTimeLeft = null;
-        if (this.slotTwoTimer$ !== null) {
-          this.slotTwoTimer$.unsubscribe();
-        }
-        break;
-      case 3 :
-        this.slotThreeStartTimestamp = null;
-        this.slotThreeTimeLeft = null;
-        if (this.slotThreeTimer$ !== null) {
-          this.slotThreeTimer$.unsubscribe();
-        }
-        break;
-      case 4 :
-        this.slotFourStartTimestamp = null;
-        this.slotFourTimeLeft = null;
-        if (this.slotFourTimer$ !== null) {
-          this.slotFourTimer$.unsubscribe();
-        }
-        break;
-    }
-  }
-
-  resetChargerStartTimestamp() {
-    if (this.pendingChargerNumber === 1) {
-      switch (this.chargerOneSlot) {
-        case 1:
-          this.setTimerToNull(1);
-          break;
-        case 2:
-          this.setTimerToNull(2);
-          break;
-        case 3:
-          this.setTimerToNull(3);
-          break;
-        case 4:
-          this.setTimerToNull(4);
-          break;
-      }
-    } else {
-      switch (this.chargerTwoSlot) {
-        case 1:
-          this.setTimerToNull(1);
-          break;
-        case 2:
-          this.setTimerToNull(2);
-          break;
-        case 3:
-          this.setTimerToNull(3);
-          break;
-        case 4:
-          this.setTimerToNull(4);
-          break;
-      }
-    }
   }
 
   setAllSlotsNull(chargerNumber: number) {
@@ -382,6 +238,151 @@ export class MainComponent implements OnInit, OnDestroy {
     }
   }
 
+  console() {
+    console.log('cl from inside charger service');
+  }
+
+  setStartTime(slot) {
+    switch (slot) {
+      case 1:
+        this.slotOneStartTimestamp = moment();
+        break;
+      case 2:
+        this.slotTwoStartTimestamp = moment();
+        break;
+      case 3:
+        this.slotThreeStartTimestamp = moment();
+        break;
+      case 4:
+        this.slotFourStartTimestamp = moment();
+        break;
+    }
+    this.setTimeLeft(slot);
+  }
+
+  setTimeLeft(slot) {
+    const timer$ = timer(0, 1000);
+    switch (slot) {
+      case 1:
+        this.slotOneTimer$ = timer$
+          .subscribe(() => {
+            const time = moment();
+            const end = moment(this.slotOneStartTimestamp).add(3, 'hours');
+            const duration = moment.duration(time.diff(end));
+            this.slotOneTimeLeft =
+              (Math.abs(duration.hours()) > 0 ? Math.abs(duration.hours()) + ':' : '')
+              + (Math.abs(duration.minutes()) > 0 ? Math.abs(duration.minutes()) + ':' : '')
+              + (Math.abs(duration.seconds()) < 10 ? '0' + Math.abs(duration.seconds()) : Math.abs(duration.seconds()));
+          });
+        break;
+
+      case 2:
+        this.slotTwoTimer$ = timer$
+          .subscribe(() => {
+            const time = moment();
+            const end = moment(this.slotTwoStartTimestamp).add(3, 'hours');
+            const duration = moment.duration(time.diff(end));
+            this.slotTwoTimeLeft =
+              (Math.abs(duration.hours()) > 0 ? Math.abs(duration.hours()) + ':' : '')
+              + (Math.abs(duration.minutes()) > 0 ? Math.abs(duration.minutes()) + ':' : '')
+              + (Math.abs(duration.seconds()) < 10 ? '0' + Math.abs(duration.seconds()) : Math.abs(duration.seconds()));
+          });
+        break;
+
+      case 3:
+        this.slotThreeTimer$ = timer$
+          .subscribe(() => {
+            const time = moment();
+            const end = moment(this.slotThreeStartTimestamp).add(3, 'hours');
+            const duration = moment.duration(time.diff(end));
+            this.slotThreeTimeLeft = (Math.abs(duration.hours()) > 0 ? Math.abs(duration.hours()) + ':' : '')
+              + (Math.abs(duration.minutes()) > 0 ? Math.abs(duration.minutes()) + ':' : '')
+              + (Math.abs(duration.seconds()) < 10 ? '0' + Math.abs(duration.seconds()) : Math.abs(duration.seconds()));
+          });
+        break;
+
+      case 4:
+        this.slotFourTimer$ = timer$
+          .subscribe(() => {
+            const time = moment();
+            const end = moment(this.slotFourStartTimestamp).add(3, 'hours');
+            const duration = moment.duration(time.diff(end));
+            this.slotFourTimeLeft = (Math.abs(duration.hours()) > 0 ? Math.abs(duration.hours()) + ':' : '')
+              + (Math.abs(duration.minutes()) > 0 ? Math.abs(duration.minutes()) + ':' : '')
+              + (Math.abs(duration.seconds()) < 10 ? '0' + Math.abs(duration.seconds()) : Math.abs(duration.seconds()));
+          });
+        break;
+    }
+
+  }
+
+  setTimerToNull(spot) {
+    switch (spot) {
+      case 1 :
+        this.slotOneStartTimestamp = null;
+        this.slotOneTimeLeft = null;
+        if (this.slotOneTimer$ !== null) {
+          this.slotOneTimer$.unsubscribe();
+        }
+        break;
+      case 2 :
+        this.slotTwoStartTimestamp = null;
+        this.slotTwoTimeLeft = null;
+        if (this.slotTwoTimer$ !== null) {
+          this.slotTwoTimer$.unsubscribe();
+        }
+        break;
+      case 3 :
+        this.slotThreeStartTimestamp = null;
+        this.slotThreeTimeLeft = null;
+        if (this.slotThreeTimer$ !== null) {
+          this.slotThreeTimer$.unsubscribe();
+        }
+        break;
+      case 4 :
+        this.slotFourStartTimestamp = null;
+        this.slotFourTimeLeft = null;
+        if (this.slotFourTimer$ !== null) {
+          this.slotFourTimer$.unsubscribe();
+        }
+        break;
+    }
+  }
+
+  resetChargerStartTimestamp() {
+    if (this.pendingChargerNumber === 1) {
+      switch (this.chargerOneSlot) {
+        case 1:
+          this.setTimerToNull(1);
+          break;
+        case 2:
+          this.setTimerToNull(2);
+          break;
+        case 3:
+          this.setTimerToNull(3);
+          break;
+        case 4:
+          this.setTimerToNull(4);
+          break;
+      }
+    } else {
+      switch (this.chargerTwoSlot) {
+        case 1:
+          this.setTimerToNull(1);
+          break;
+        case 2:
+          this.setTimerToNull(2);
+          break;
+        case 3:
+          this.setTimerToNull(3);
+          break;
+        case 4:
+          this.setTimerToNull(4);
+          break;
+      }
+    }
+  }
+
   parkingSpotClickHandler(payload) {
     console.log('parkingSpotClickHandler(payload):', payload);
     if (payload.disconnect) {
@@ -398,4 +399,5 @@ export class MainComponent implements OnInit, OnDestroy {
       this.setCharger(this.pendingChargerNumber, payload.spot);
     }
   }
+
 }
