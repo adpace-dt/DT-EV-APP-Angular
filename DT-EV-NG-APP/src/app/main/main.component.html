@@ -1,9 +1,13 @@
 <div>
-{{chargerData$.chargerOneSlot}}
   <p class="info">TAP CAR TO TOGGLE OCCUPIED.<br>TAP CHARGER THEN CAR TO CHARGE.</p>
-  <div class="main-container">
+  <div class="main-container"><!--{{chargerData.chargerOneSlot}}-->
+    <button style="background-color: blue; color: white;" (click)="sendMessage()">send message</button>
+<!--    {{data}}-->
+
+    <div *ngFor="let message of messages">{{message.text.data}}</div>
+
     <div class="row">
-      <div class="col-40">
+      <div class="col-40 slotBackground">
         <div *ngIf="slotFourChargerNumber">
           <app-charger
             [chargerNumber]="slotFourChargerNumber"
@@ -28,7 +32,7 @@
     </div>
 
     <div class="row">
-      <div class="col-40">
+      <div class="col-40 slotBackground">
         <div *ngIf="slotThreeChargerNumber">
           <app-charger
             [chargerNumber]="slotThreeChargerNumber"
@@ -53,7 +57,7 @@
     </div>
 
     <div class="row">
-      <div class="col-40">
+      <div class="col-40 slotBackground">
         <div *ngIf="slotTwoChargerNumber">
           <app-charger
             [chargerNumber]="slotTwoChargerNumber"
@@ -78,7 +82,7 @@
     </div>
 
     <div class="row">
-      <div class="col-40">
+      <div class="col-40 slotBackground">
         <div *ngIf="slotOneChargerNumber">
           <app-charger
             [chargerNumber]="slotOneChargerNumber"

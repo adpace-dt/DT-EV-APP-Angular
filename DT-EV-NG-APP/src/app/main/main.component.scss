@@ -13,10 +13,15 @@
   .row {
     display: flex;
     height: 20vh;
+    box-shadow: 3px 0px 28px 9px rgba(0,0,0,0.65);
   }
 
   .col-40 {
     width: calc(40vw - 3px);
+  }
+
+  .slotBackground {
+    background: rgba(0, 0, 0, 0.3);
   }
 
   .col-60 {

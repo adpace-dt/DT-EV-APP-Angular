@@ -1,18 +1,24 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, OnChanges, SimpleChanges} from '@angular/core';
 import * as moment from 'moment';
-import {Subject, Subscription} from 'rxjs';
+import {Subscription} from 'rxjs';
 import {timer} from 'rxjs';
 
-import {ChargerService} from '../../services/charger.service';
+import {MessageService} from '../../services/charger.service';
+// import {ChargerService} from '../../services/charger.service';
 
 @Component({
   selector: 'app-main',
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.scss']
 })
-export class MainComponent implements OnInit, OnDestroy {
-  subscription;
-  chargerData$;
+export class MainComponent implements OnInit, OnDestroy, OnChanges {
+  subscription: Subscription;
+  data: any[] = [];
+  messages: any[] = [];
+  chargerDataSubscription: Subscription;
+  chargerData$: Subscription;
+  chargerData: object;
+
   chargerOneSlot = 0;
   chargerTwoSlot = 0;
   pendingChargerSlot: number = null;
@@ -41,21 +47,55 @@ export class MainComponent implements OnInit, OnDestroy {
   // parkingSlotFourOccupied = false;
   // private pendingChargerSlot$: BehaviorSubject<number>;
 
-  constructor(private chargerService: ChargerService) {
-    this.subscription = this.chargerService.getChargerData()
-      .subscribe(data => this.chargerData$ = data);
+  constructor(private messageService: MessageService) {
+    console.log('constructor hit');
+    this.subscription = this.messageService.getMessage().subscribe(message => {
+
+      // console.log('message', message);
+      if (message) {
+        this.messages.push(message);
+        console.log('message', message);
+      } else {
+        // clear messages when empty message received
+        this.data = [];
+      }
+    });
+
+    // console.log('main constructor');
+    // this.chargerDataSubscription = this.chargerService.getChargerData()
+    //   // .subscribe(data => console.log('main constuctor', data));
+    //   .subscribe(data => {this.chargerData = data; });
+    // console.log('from main constructor', this.chargerData);
+
+  }
+
+  sendMessage(): void {
+    // send message to subscribers via observable subject
+    this.messageService.sendMessage({text: 'Message from Home Component to App Component!'});
+  }
+
+  ngOnInit(): void {
+    // this.chargerService.getChargerData();
+    // console.log(this.chargerData);
+  }
+
+  getData(): void {
+    // this.chargerService.getChargerData();
+    // console.log(this.chargerData);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    // this.chargerData$ = this.chargerService.getChargerData()
+    //   .subscribe(data => this.chargerData = data);
+    // console.log('from onChanges', this.chargerData);
   }
 
   ngOnDestroy() {
     this.chargerData$.unsubscribe();
   }
 
-  ngOnInit(): void {
-    console.log('cl hit from main', this.subscription);
-    // this.chargerData = this.chargerService.getChargerData();
-  }
-
   resetPendingCharger() {
+    // this.chargerService.resetPendingCharger();
     this.pendingChargerSlot = null;
     this.pendingChargerNumber = null;
   }
@@ -202,6 +242,7 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   setAllSlotsNull(chargerNumber: number) {
+    // this.chargerService.setAllSlotsNull(chargerNumber);
     // set all slotChargerNumbers to null before setting slot
     if (this.slotOneChargerNumber === chargerNumber) {
       this.slotOneChargerNumber = null;
@@ -218,6 +259,7 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   setCharger(chargerNumber, slot) {
+    // this.chargerService.setCharger(chargerNumber, slot);
     if (chargerNumber && (slot || slot === 0)) {
       // slot === 0 is called for a charger disconnect event
       if (slot === 0) {
@@ -371,6 +413,7 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   chargerClickHandler($event) {
+    // this.chargerService.chargerClickHandler($event);
     if (this.pendingChargerSlot === null) {
       this.pendingChargerSlot = $event.slotNumber;
       this.pendingChargerNumber = $event.chargerNumber;
@@ -385,17 +428,19 @@ export class MainComponent implements OnInit, OnDestroy {
   parkingSpotClickHandler(payload) {
     console.log('parkingSpotClickHandler(payload):', payload);
     if (payload.disconnect) {
-
-      console.log('set timer to null in spot: ', payload.spot);
       this.setTimerToNull(payload.spot);
       this.pendingChargerSlot = payload.spot;
       this.pendingChargerNumber = payload.chargerNumber;
       this.setCharger(payload.chargerNumber, 0);
       payload.chargerNumber === 1 ? this.chargerOneSlot = 0 : this.chargerTwoSlot = 0;
+      // payload.chargerNumber === 1 ? this.chargerService.setChargerOneSlot(0) : this.chargerTwoSlot = 0;
       this.consoleLogData();
     } else {
       this.resetChargerStartTimestamp();
       this.setCharger(this.pendingChargerNumber, payload.spot);
+      // this.chargerService.setCharger(this.pendingChargerNumber, payload.spot);
+      // this.consoleLogData();
+      // console.log('charger data', this.chargerData);
     }
   }
 }

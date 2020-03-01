@@ -7,7 +7,7 @@ import { ParkingSpotComponent } from './parking-spot/parking-spot.component';
 import { ChargerComponent } from './charger/charger.component';
 import { HeaderComponent } from './header/header.component';
 import { MainComponent } from './main/main.component';
-import { ChargerService } from '../services/charger.service';
+import { MessageService } from '../services/charger.service';
 
 @NgModule({
   declarations: [
@@ -21,7 +21,7 @@ import { ChargerService } from '../services/charger.service';
     BrowserModule,
     AppRoutingModule
   ],
-  providers: [ChargerService],
+  providers: [MessageService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

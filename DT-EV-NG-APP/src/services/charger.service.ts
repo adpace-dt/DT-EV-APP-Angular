@@ -1,12 +1,33 @@
+import { Injectable } from '@angular/core';
+import { Observable, Subject } from 'rxjs';
+
+@Injectable({ providedIn: 'root' })
+export class MessageService {
+  private subject = new Subject<any>();
+
+  sendMessage(message: object) {
+    this.subject.next({ text: {data: 4} });
+  }
+
+  clearMessages() {
+    this.subject.next();
+  }
+
+  getMessage(): Observable<any> {
+    return this.subject.asObservable();
+  }
+}
+
+/*
 import {Injectable} from '@angular/core';
-import {Observable, Subject, Subscription, timer} from 'rxjs';
+import {BehaviorSubject, Subject, Observable, Subscription, timer} from 'rxjs';
 import * as moment from 'moment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ChargerService {
-  private chargerData$ = new Subject<object>();
+  chargerDataSubject = new Subject<any>();
   chargerOneSlot = 0;
   chargerTwoSlot = 0;
   pendingChargerSlot: number = null;
@@ -31,15 +52,16 @@ export class ChargerService {
 
   constructor() {
     this.setChargerData();
-    console.log(this.chargerData$);
   }
 
   getChargerData(): Observable<object> {
-    return this.chargerData$.asObservable();
+   return this.chargerDataSubject.asObservable();
   }
 
   setChargerData() {
-    this.chargerData$.next({
+    console.log('setChargerData hit');
+    // tslint:disable-next-line:variable-name
+    const Data = {
       chargerOneSlot: this.chargerOneSlot,
       chargerTwoSlot: this.chargerTwoSlot,
       pendingChargerSlot: this.pendingChargerSlot,
@@ -48,7 +70,10 @@ export class ChargerService {
       slotTwoChargerNumber: this.slotTwoChargerNumber,
       slotThreeChargerNumber: this.slotThreeChargerNumber,
       slotFourChargerNumber: this.slotFourChargerNumber
-    });
+    };
+    // add a key to below
+    this.chargerDataSubject.next(Data);
+    console.log(Data);
 
   }
 
@@ -74,6 +99,7 @@ export class ChargerService {
   }
 
   setCharger(chargerNumber, slot) {
+    console.log('setCharger hit in charger service: #/slot: ', chargerNumber, slot);
     if (chargerNumber && (slot || slot === 0)) {
       // slot === 0 is called for a charger disconnect event
       if (slot === 0) {
@@ -216,14 +242,14 @@ export class ChargerService {
   }
 
   consoleLogData() {
-    console.log('chargerOneSlot: ', this.chargerOneSlot);
-    console.log('chargerTwoSlot: ', this.chargerTwoSlot);
-    console.log('pendingChargerSlot: : ', this.pendingChargerSlot);
-    console.log('pendingChargerNumber: ', this.pendingChargerNumber);
-    console.log('slotOneChargerNumber: ', this.slotOneChargerNumber);
-    console.log('slotTwoChargerNumber: ', this.slotTwoChargerNumber);
-    console.log('slotThreeChargerNumber: ', this.slotThreeChargerNumber);
-    console.log('slotFourChargerNumber: ', this.slotFourChargerNumber);
+    console.log('from charger service: chargerOneSlot: ', this.chargerOneSlot);
+    console.log('from charger service: chargerTwoSlot: ', this.chargerTwoSlot);
+    console.log('from charger service: pendingChargerSlot: : ', this.pendingChargerSlot);
+    console.log('from charger service: pendingChargerNumber: ', this.pendingChargerNumber);
+    console.log('from charger service: slotOneChargerNumber: ', this.slotOneChargerNumber);
+    console.log('from charger service: slotTwoChargerNumber: ', this.slotTwoChargerNumber);
+    console.log('from charger service: slotThreeChargerNumber: ', this.slotThreeChargerNumber);
+    console.log('from charger service: slotFourChargerNumber: ', this.slotFourChargerNumber);
   }
 
   chargerClickHandler($event) {
@@ -236,10 +262,7 @@ export class ChargerService {
       this.pendingChargerSlot = $event.slotNumber;
       this.pendingChargerNumber = $event.chargerNumber;
     }
-  }
-
-  console() {
-    console.log('cl from inside charger service');
+    this.consoleLogData();
   }
 
   setStartTime(slot) {
@@ -400,4 +423,9 @@ export class ChargerService {
     }
   }
 
+  setChargerOneSlot(slot: number) {
+    this.chargerOneSlot = slot;
+  }
+
 }
+*/
