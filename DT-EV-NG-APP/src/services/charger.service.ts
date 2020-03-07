@@ -1,33 +1,14 @@
-import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
-
-@Injectable({ providedIn: 'root' })
-export class MessageService {
-  private subject = new Subject<any>();
-
-  sendMessage(message: object) {
-    this.subject.next({ text: {data: 4} });
-  }
-
-  clearMessages() {
-    this.subject.next();
-  }
-
-  getMessage(): Observable<any> {
-    return this.subject.asObservable();
-  }
-}
-
-/*
 import {Injectable} from '@angular/core';
-import {BehaviorSubject, Subject, Observable, Subscription, timer} from 'rxjs';
+import {BehaviorSubject, Observable, Subscription, timer} from 'rxjs';
 import * as moment from 'moment';
+import {ParkingService} from './parking.service';
+import { IParkingData } from '../app/interfaces/iparking-data';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ChargerService {
-  chargerDataSubject = new Subject<any>();
+  chargerDataSubject = new BehaviorSubject<any>(null);
   chargerOneSlot = 0;
   chargerTwoSlot = 0;
   pendingChargerSlot: number = null;
@@ -37,6 +18,7 @@ export class ChargerService {
   slotThreeChargerNumber = 2;
   slotFourChargerNumber: number = null;
 
+  parkingData: IParkingData;
   slotOneTimeLeft: string;
   slotTwoTimeLeft: string;
   slotThreeTimeLeft: string;
@@ -50,18 +32,23 @@ export class ChargerService {
   slotThreeTimer$: Subscription = null;
   slotFourTimer$: Subscription = null;
 
-  constructor() {
+  constructor(private parkingService: ParkingService) {
     this.setChargerData();
+    parkingService.getParkingData()
+      .subscribe(
+        data => {
+          this.parkingData = data;
+          console.log(data);
+        });
   }
 
   getChargerData(): Observable<object> {
-   return this.chargerDataSubject.asObservable();
+    return this.chargerDataSubject.asObservable();
   }
 
   setChargerData() {
-    console.log('setChargerData hit');
     // tslint:disable-next-line:variable-name
-    const Data = {
+    const _data = {
       chargerOneSlot: this.chargerOneSlot,
       chargerTwoSlot: this.chargerTwoSlot,
       pendingChargerSlot: this.pendingChargerSlot,
@@ -71,10 +58,7 @@ export class ChargerService {
       slotThreeChargerNumber: this.slotThreeChargerNumber,
       slotFourChargerNumber: this.slotFourChargerNumber
     };
-    // add a key to below
-    this.chargerDataSubject.next(Data);
-    console.log(Data);
-
+    this.chargerDataSubject.next(_data);
   }
 
   resetPendingCharger() {
@@ -107,18 +91,10 @@ export class ChargerService {
         // set the charger to a default slot
         if (chargerNumber === 1) {
           this.chargerOneSlot = 0;
-          if (this.slotTwoChargerNumber === 2) {
-            this.slotThreeChargerNumber = 1;
-          } else {
-            this.slotTwoChargerNumber = 1;
-          }
+          this.slotTwoChargerNumber === 2 ? this.slotThreeChargerNumber = 1 : this.slotTwoChargerNumber = 1;
         } else { // Charger === 2
           this.chargerTwoSlot = 0;
-          if (this.slotThreeChargerNumber === 1) {
-            this.slotTwoChargerNumber = 2;
-          } else {
-            this.slotThreeChargerNumber = 2;
-          }
+          this.slotThreeChargerNumber === 1 ? this.slotTwoChargerNumber = 2 : this.slotThreeChargerNumber = 2;
         }
         this.resetPendingCharger();
       }
@@ -239,6 +215,7 @@ export class ChargerService {
         }
       }
     }
+    this.setChargerData();
   }
 
   consoleLogData() {
@@ -262,7 +239,6 @@ export class ChargerService {
       this.pendingChargerSlot = $event.slotNumber;
       this.pendingChargerNumber = $event.chargerNumber;
     }
-    this.consoleLogData();
   }
 
   setStartTime(slot) {
@@ -425,7 +401,17 @@ export class ChargerService {
 
   setChargerOneSlot(slot: number) {
     this.chargerOneSlot = slot;
+    this.setChargerData();
+  }
+
+  setChargerTwoSlot(slot: number) {
+    this.chargerTwoSlot = slot;
+    this.setChargerData();
+  }
+
+  setPendingCharger(chargerNumber: number, spot: number) {
+    this.pendingChargerSlot = spot;
+    this.pendingChargerNumber = chargerNumber;
   }
 
 }
-*/

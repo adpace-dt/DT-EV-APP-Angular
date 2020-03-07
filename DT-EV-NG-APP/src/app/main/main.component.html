@@ -1,11 +1,9 @@
 <div>
   <p class="info">TAP CAR TO TOGGLE OCCUPIED.<br>TAP CHARGER THEN CAR TO CHARGE.</p>
   <div class="main-container"><!--{{chargerData.chargerOneSlot}}-->
-    <button style="background-color: blue; color: white;" (click)="sendMessage()">send message</button>
-<!--    {{data}}-->
-
-    <div *ngFor="let message of messages">{{message.text.data}}</div>
-
+    <button style="background-color: blue; color: white;" (click)="printParkingServiceData()">service data</button>
+    <button style="background-color: blue; color: white;" (click)="printChargerData()">print chargerdata</button>
+    {{chargerData.chargerOneSlot}} {{temp}}
     <div class="row">
       <div class="col-40 slotBackground">
         <div *ngIf="slotFourChargerNumber">
