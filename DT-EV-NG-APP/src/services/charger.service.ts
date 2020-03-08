@@ -2,13 +2,15 @@ import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable, Subscription, timer} from 'rxjs';
 import * as moment from 'moment';
 import {ParkingService} from './parking.service';
-import { IParkingData } from '../app/interfaces/iparking-data';
+import {IParkingData} from '../app/interfaces/iparking-data';
+import {IChargerData} from '../app/interfaces/icharger-data';
+import {TimingService} from './timing.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ChargerService {
-  chargerDataSubject = new BehaviorSubject<any>(null);
+  chargerDataSubject = new BehaviorSubject<IChargerData>(null);
   chargerOneSlot = 0;
   chargerTwoSlot = 0;
   pendingChargerSlot: number = null;
@@ -18,7 +20,7 @@ export class ChargerService {
   slotThreeChargerNumber = 2;
   slotFourChargerNumber: number = null;
 
-  parkingData: IParkingData;
+  // parkingData: IParkingData;
   slotOneTimeLeft: string;
   slotTwoTimeLeft: string;
   slotThreeTimeLeft: string;
@@ -32,17 +34,29 @@ export class ChargerService {
   slotThreeTimer$: Subscription = null;
   slotFourTimer$: Subscription = null;
 
-  constructor(private parkingService: ParkingService) {
+  constructor(private timingService: TimingService) {
     this.setChargerData();
-    parkingService.getParkingData()
+    timingService.getStartTimestamp()
       .subscribe(
         data => {
-          this.parkingData = data;
           console.log(data);
-        });
+          this.slotOneStartTimestamp = data.slotOneStartTimestamp;
+          this.slotTwoStartTimestamp = data.slotTwoStartTimestamp;
+          this.slotThreeStartTimestamp = data.slotThreeStartTimestamp;
+          this.slotFourStartTimestamp = data.slotFourStartTimestamp;
+          this.setChargerData();
+        }
+  )
+    ;
+    // this.parkingService.getParkingData()
+    //   .subscribe(
+    //     data => {
+    //       this.parkingData = data;
+    //       console.log(data);
+    //     });
   }
 
-  getChargerData(): Observable<object> {
+  getChargerData(): Observable<IChargerData> {
     return this.chargerDataSubject.asObservable();
   }
 
@@ -64,6 +78,7 @@ export class ChargerService {
   resetPendingCharger() {
     this.pendingChargerSlot = null;
     this.pendingChargerNumber = null;
+    this.setChargerData();
   }
 
   setAllSlotsNull(chargerNumber: number) {
@@ -80,6 +95,7 @@ export class ChargerService {
     if (this.slotFourChargerNumber === chargerNumber) {
       this.slotFourChargerNumber = null;
     }
+    this.setChargerData();
   }
 
   setCharger(chargerNumber, slot) {
@@ -103,7 +119,7 @@ export class ChargerService {
         if (this.slotOneChargerNumber === null) {
           this.setAllSlotsNull(chargerNumber);
           this.slotOneChargerNumber = chargerNumber;
-          this.setStartTime(slot);
+          this.timingService.setStartTime(slot);
           chargerNumber === 1 ? this.chargerOneSlot = slot : this.chargerTwoSlot = slot;
           this.resetPendingCharger();
         } else {
@@ -121,14 +137,14 @@ export class ChargerService {
               this.slotThreeChargerNumber = 2;
               this.slotTwoChargerNumber = 1;
               this.chargerOneSlot = 2;
-              this.setStartTime(slot);
+              this.timingService.setStartTime(slot);
             } else if (this.chargerTwoSlot === 2) {
               console.warn('slot not empty');
             } else {
               this.setAllSlotsNull(chargerNumber);
               this.slotTwoChargerNumber = 1;
               this.chargerOneSlot = 2;
-              this.setStartTime(slot);
+              this.timingService.setStartTime(slot);
             }
           } else { // chargerNumber === 2
             if (this.chargerOneSlot === 0 && this.slotTwoChargerNumber === 1) {
@@ -136,14 +152,14 @@ export class ChargerService {
               this.slotThreeChargerNumber = 1;
               this.slotTwoChargerNumber = 2;
               this.chargerTwoSlot = 2;
-              this.setStartTime(slot);
+              this.timingService.setStartTime(slot);
             } else if (this.chargerOneSlot === 2) {
               console.warn('slot not empty');
             } else {
               this.setAllSlotsNull(chargerNumber);
               this.slotTwoChargerNumber = 2;
               this.chargerTwoSlot = 2;
-              this.setStartTime(slot);
+              this.timingService.setStartTime(slot);
             }
           }
         }
@@ -151,7 +167,7 @@ export class ChargerService {
         if (this.slotTwoChargerNumber === null) {
           this.setAllSlotsNull(chargerNumber);
           this.slotTwoChargerNumber = chargerNumber;
-          this.setStartTime(slot);
+          this.timingService.setStartTime(slot);
           chargerNumber === 1 ? this.chargerOneSlot = slot : this.chargerTwoSlot = slot;
         } else {
           console.warn('slot not empty');
@@ -168,14 +184,14 @@ export class ChargerService {
               this.slotTwoChargerNumber = 2;
               this.slotThreeChargerNumber = 1;
               this.chargerOneSlot = 3;
-              this.setStartTime(slot);
+              this.timingService.setStartTime(slot);
             } else if (this.chargerTwoSlot === 3) {
               console.warn('slot not empty');
             } else {
               this.setAllSlotsNull(chargerNumber);
               this.slotThreeChargerNumber = 1;
               this.chargerOneSlot = 3;
-              this.setStartTime(slot);
+              this.timingService.setStartTime(slot);
             }
           } else { // chargerNumber === 2
             if (this.chargerOneSlot === 0 && this.slotThreeChargerNumber === 1) {
@@ -183,21 +199,21 @@ export class ChargerService {
               this.slotTwoChargerNumber = 1;
               this.slotThreeChargerNumber = 2;
               this.chargerTwoSlot = 3;
-              this.setStartTime(slot);
+              this.timingService.setStartTime(slot);
             } else if (this.chargerOneSlot === 3) {
               console.warn('slot not empty');
             } else {
               this.setAllSlotsNull(chargerNumber);
               this.slotThreeChargerNumber = 2;
               this.chargerTwoSlot = 3;
-              this.setStartTime(slot);
+              this.timingService.setStartTime(slot);
             }
           }
         } else if (this.slotThreeChargerNumber === null) {
           // check to see if there is a default charger set in this slot
           this.setAllSlotsNull(chargerNumber);
           this.slotThreeChargerNumber = chargerNumber;
-          this.setStartTime(slot);
+          this.timingService.setStartTime(slot);
           chargerNumber === 1 ? this.chargerOneSlot = slot : this.chargerTwoSlot = slot;
         }
         this.resetPendingCharger();
@@ -207,7 +223,7 @@ export class ChargerService {
         if (this.slotFourChargerNumber === null) {
           this.setAllSlotsNull(chargerNumber);
           this.slotFourChargerNumber = chargerNumber;
-          this.setStartTime(slot);
+          this.timingService.setStartTime(slot);
           chargerNumber === 1 ? this.chargerOneSlot = slot : this.chargerTwoSlot = slot;
           this.resetPendingCharger();
         } else {
@@ -219,14 +235,7 @@ export class ChargerService {
   }
 
   consoleLogData() {
-    console.log('from charger service: chargerOneSlot: ', this.chargerOneSlot);
-    console.log('from charger service: chargerTwoSlot: ', this.chargerTwoSlot);
-    console.log('from charger service: pendingChargerSlot: : ', this.pendingChargerSlot);
-    console.log('from charger service: pendingChargerNumber: ', this.pendingChargerNumber);
-    console.log('from charger service: slotOneChargerNumber: ', this.slotOneChargerNumber);
-    console.log('from charger service: slotTwoChargerNumber: ', this.slotTwoChargerNumber);
-    console.log('from charger service: slotThreeChargerNumber: ', this.slotThreeChargerNumber);
-    console.log('from charger service: slotFourChargerNumber: ', this.slotFourChargerNumber);
+    console.log(this.chargerDataSubject.getValue());
   }
 
   chargerClickHandler($event) {
@@ -239,6 +248,7 @@ export class ChargerService {
       this.pendingChargerSlot = $event.slotNumber;
       this.pendingChargerNumber = $event.chargerNumber;
     }
+    this.setChargerData();
   }
 
   setStartTime(slot) {
@@ -257,6 +267,7 @@ export class ChargerService {
         break;
     }
     this.setTimeLeft(slot);
+    this.setChargerData();
   }
 
   setTimeLeft(slot) {
@@ -313,6 +324,7 @@ export class ChargerService {
         break;
     }
 
+    this.setChargerData();
   }
 
   setTimerToNull(spot) {
@@ -346,6 +358,7 @@ export class ChargerService {
         }
         break;
     }
+    this.setChargerData();
   }
 
   resetChargerStartTimestamp() {
@@ -380,6 +393,7 @@ export class ChargerService {
           break;
       }
     }
+    this.setChargerData();
   }
 
   parkingSpotClickHandler(payload) {

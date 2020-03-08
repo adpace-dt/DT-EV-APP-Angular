@@ -1,10 +1,10 @@
 import {Component, OnDestroy, OnInit, OnChanges, SimpleChanges} from '@angular/core';
-import * as moment from 'moment';
 import {Subscription} from 'rxjs';
-import {timer} from 'rxjs';
-
 import {ChargerService} from '../../services/charger.service';
 import {ParkingService} from '../../services/parking.service';
+import {IChargerData} from '../interfaces/icharger-data';
+import {IParkingData} from '../interfaces/iparking-data';
+import {$e} from 'codelyzer/angular/styles/chars';
 
 @Component({
   selector: 'app-main',
@@ -14,45 +14,19 @@ import {ParkingService} from '../../services/parking.service';
 export class MainComponent implements OnDestroy {
   chargerData$: Subscription;
   parkingData$: Subscription;
-  chargerData: object;
-  temp = this.chargerService.slotThreeChargerNumber;
-
-  chargerOneSlot = this.chargerService.chargerOneSlot;
-  chargerTwoSlot = this.chargerService.chargerTwoSlot;
-  pendingChargerSlot = this.chargerService.pendingChargerSlot;
-  pendingChargerNumber = this.chargerService.pendingChargerNumber;
-  slotOneChargerNumber = this.chargerService.slotOneChargerNumber;
-  slotTwoChargerNumber  = this.chargerService.slotTwoChargerNumber;
-  slotThreeChargerNumber  = this.chargerService.slotThreeChargerNumber;
-  slotFourChargerNumber  = this.chargerService.slotThreeChargerNumber;
-  slotOneTimeLeft = this.parkingService.slotOneTimeLeft;
-  slotTwoTimeLeft = this.parkingService.slotTwoTimeLeft;
-  slotThreeTimeLeft = this.parkingService.slotThreeTimeLeft;
-  slotFourTimeLeft = this.parkingService.slotFourTimeLeft;
-  slotOneStartTimestamp = this.parkingService.slotOneStartTimestamp;
-  slotTwoStartTimestamp = this.parkingService.slotTwoStartTimestamp;
-  slotThreeStartTimestamp = this.parkingService.slotThreeStartTimestamp;
-  slotFourStartTimestamp = this.parkingService.slotFourStartTimestamp;
-  slotOneTimer$: Subscription = null;
-  slotTwoTimer$: Subscription = null;
-  slotThreeTimer$: Subscription = null;
-  slotFourTimer$: Subscription = null;
-
-  // below will be used when refactoring for API's
-  // parkingSlotOneOccupied = false;
-  // parkingSlotTwoOccupied = false;
-  // parkingSlotThreeOccupied = false;
-  // parkingSlotFourOccupied = false;
-  // private pendingChargerSlot$: BehaviorSubject<number>;
+  chargerData: IChargerData;
+  parkingData: IParkingData;
+  temp: number;
 
   constructor(private chargerService: ChargerService, private parkingService: ParkingService) {
     this.chargerData$ = this.chargerService.getChargerData()
       .subscribe(data => {
         this.chargerData = data;
+        this.temp = data.pendingChargerNumber;
       });
     this.parkingData$ = this.parkingService.getParkingData()
       .subscribe(data => {
-        this.chargerData = data;
+        this.parkingData = data;
       });
   }
 
@@ -65,18 +39,12 @@ export class MainComponent implements OnDestroy {
   }
 
   parkingSpotClickHandler(payload) {
-    // this.parkingService.parkingSpotClickHandler(payload);
+    this.parkingService.parkingSpotClickHandler(payload);
   }
 
-  consoleLogData() {
-    console.log('chargerOneSlot: ', this.chargerOneSlot);
-    console.log('chargerTwoSlot: ', this.chargerTwoSlot);
-    console.log('pendingChargerSlot: : ', this.pendingChargerSlot);
-    console.log('pendingChargerNumber: ', this.pendingChargerNumber);
-    console.log('slotOneChargerNumber: ', this.slotOneChargerNumber);
-    console.log('slotTwoChargerNumber: ', this.slotTwoChargerNumber);
-    console.log('slotThreeChargerNumber: ', this.slotThreeChargerNumber);
-    console.log('slotFourChargerNumber: ', this.slotFourChargerNumber);
+  printMainData() {
+    console.log('ChargerData', this.chargerData);
+    console.log('ParkingData', this.parkingData);
   }
 
   printChargerData() {
@@ -89,5 +57,9 @@ export class MainComponent implements OnDestroy {
 
   printParkingServiceData() {
     this.parkingService.consoleLogData();
+  }
+
+  printChargerDataFromPS() {
+    this.parkingService.printChargerData();
   }
 }

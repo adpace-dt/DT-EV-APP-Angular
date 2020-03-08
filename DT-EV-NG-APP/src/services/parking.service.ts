@@ -2,16 +2,19 @@ import {Injectable, OnDestroy} from '@angular/core';
 import {BehaviorSubject, Observable, Subscription, timer} from 'rxjs';
 import * as moment from 'moment';
 import {ChargerService} from './charger.service';
-import { IChargerData } from '../app/interfaces/icharger-data'
+import {IChargerData} from '../app/interfaces/icharger-data';
+import {IParkingData} from '../app/interfaces/iparking-data';
+import { TimingService } from "./timing.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class ParkingService implements OnDestroy {
-  chargerService: ChargerService;
   chargerData$: Subscription;
   chargerData: IChargerData;
-  parkingData$ = new BehaviorSubject<any>(null);
+  // chargerData: IChargerData;
+
+  parkingData$ = new BehaviorSubject<IParkingData>(null);
 
   slotOneTimeLeft: string;
   slotTwoTimeLeft: string;
@@ -26,7 +29,21 @@ export class ParkingService implements OnDestroy {
   slotThreeTimer$: Subscription = null;
   slotFourTimer$: Subscription = null;
 
-  constructor() {
+  constructor(private chargerService: ChargerService, private timingService: TimingService) {
+    this.chargerData$ = this.chargerService.getChargerData()
+      .subscribe(
+        data => this.chargerData = data
+      );
+    this.timingService.getStartTimestamp()
+      .subscribe(
+        data => {
+          this.slotOneStartTimestamp = data.slotOneStartTimestamp;
+          this.slotTwoStartTimestamp = data.slotTwoStartTimestamp;
+          this.slotThreeStartTimestamp = data.slotThreeStartTimestamp;
+          this.slotFourStartTimestamp = data.slotFourStartTimestamp;
+          this.setParkingData();
+        }
+      );
     this.setParkingData();
   }
 
@@ -53,8 +70,19 @@ export class ParkingService implements OnDestroy {
     this.parkingData$.next(_data);
   }
 
-  getParkingData(): Observable<object> {
+  getParkingData(): Observable<IParkingData> {
     return this.parkingData$.asObservable();
+  }
+
+  getChargerData(): void {
+    this.chargerData$ = this.chargerService.getChargerData()
+      .subscribe(data => {
+        this.chargerData = data;
+      });
+  }
+
+  printChargerData() {
+    this.chargerService.consoleLogData();
   }
 
   setStartTime(slot) {
@@ -88,6 +116,7 @@ export class ParkingService implements OnDestroy {
               (Math.abs(duration.hours()) > 0 ? Math.abs(duration.hours()) + ':' : '')
               + (Math.abs(duration.minutes()) > 0 ? Math.abs(duration.minutes()) + ':' : '')
               + (Math.abs(duration.seconds()) < 10 ? '0' + Math.abs(duration.seconds()) : Math.abs(duration.seconds()));
+            this.setParkingData();
           });
         break;
 
@@ -101,6 +130,7 @@ export class ParkingService implements OnDestroy {
               (Math.abs(duration.hours()) > 0 ? Math.abs(duration.hours()) + ':' : '')
               + (Math.abs(duration.minutes()) > 0 ? Math.abs(duration.minutes()) + ':' : '')
               + (Math.abs(duration.seconds()) < 10 ? '0' + Math.abs(duration.seconds()) : Math.abs(duration.seconds()));
+            this.setParkingData();
           });
         break;
 
@@ -113,6 +143,7 @@ export class ParkingService implements OnDestroy {
             this.slotThreeTimeLeft = (Math.abs(duration.hours()) > 0 ? Math.abs(duration.hours()) + ':' : '')
               + (Math.abs(duration.minutes()) > 0 ? Math.abs(duration.minutes()) + ':' : '')
               + (Math.abs(duration.seconds()) < 10 ? '0' + Math.abs(duration.seconds()) : Math.abs(duration.seconds()));
+            this.setParkingData();
           });
         break;
 
@@ -125,6 +156,7 @@ export class ParkingService implements OnDestroy {
             this.slotFourTimeLeft = (Math.abs(duration.hours()) > 0 ? Math.abs(duration.hours()) + ':' : '')
               + (Math.abs(duration.minutes()) > 0 ? Math.abs(duration.minutes()) + ':' : '')
               + (Math.abs(duration.seconds()) < 10 ? '0' + Math.abs(duration.seconds()) : Math.abs(duration.seconds()));
+            this.setParkingData();
           });
         break;
     }
@@ -162,11 +194,12 @@ export class ParkingService implements OnDestroy {
         }
         break;
     }
+    this.setParkingData();
   }
 
   resetChargerStartTimestamp() {
     if (this.chargerData.pendingChargerNumber === 1) {
-      switch (this.chargerOneSlot) {
+      switch (this.chargerData.chargerOneSlot) {
         case 1:
           this.setTimerToNull(1);
           break;
@@ -181,7 +214,7 @@ export class ParkingService implements OnDestroy {
           break;
       }
     } else {
-      switch (this.chargerTwoSlot) {
+      switch (this.chargerData.chargerTwoSlot) {
         case 1:
           this.setTimerToNull(1);
           break;
@@ -196,37 +229,38 @@ export class ParkingService implements OnDestroy {
           break;
       }
     }
+    this.setParkingData();
   }
 
   parkingSpotClickHandler(payload) {
-    console.log('parkingSpotClickHandler(payload):', payload);
+    // console.log('parkingSpotClickHandler(payload):', payload);
     if (payload.disconnect) {
       console.log('set timer to null in spot: ', payload.spot);
       this.setTimerToNull(payload.spot);
-      this.chargerService.setPendingCharger(payload.chargerNumber, payload.spot)
-      // this.pendingChargerSlot = payload.spot;
-      // this.pendingChargerNumber = payload.chargerNumber;
+      this.chargerService.setPendingCharger(payload.chargerNumber, payload.spot);
       this.chargerService.setCharger(payload.chargerNumber, 0);
       payload.chargerNumber === 1 ? this.chargerService.setChargerOneSlot(0) : this.chargerService.setChargerTwoSlot(0);
-      // this.consoleLogData();
     } else {
       this.resetChargerStartTimestamp();
+      this.chargerService.setCharger(this.chargerData.pendingChargerNumber, payload.spot);
     }
+    this.setParkingData();
   }
 
   consoleLogData() {
-    console.log('chargerData', this.chargerData);
-    console.log('from parking service', this.slotOneTimeLeft);
-    console.log('from parking service', this.slotTwoTimeLeft);
-    console.log('from parking service', this.slotThreeTimeLeft);
-    console.log('from parking service', this.slotFourTimeLeft);
-    console.log('from parking service', this.slotOneStartTimestamp);
-    console.log('from parking service', this.slotTwoStartTimestamp);
-    console.log('from parking service', this.slotThreeStartTimestamp);
-    console.log('from parking service', this.slotFourStartTimestamp);
-    console.log('from parking service', this.slotOneTimer$);
-    console.log('from parking service', this.slotTwoTimer$);
-    console.log('from parking service', this.slotThreeTimer$);
-    console.log('from parking service', this.slotFourTimer$);
+    console.log('parkingData$: ', this.parkingData$.getValue());
+    // console.log('chargerData', this.chargerData);
+    // console.log('from parking service', this.slotOneTimeLeft);
+    // console.log('from parking service', this.slotTwoTimeLeft);
+    // console.log('from parking service', this.slotThreeTimeLeft);
+    // console.log('from parking service', this.slotFourTimeLeft);
+    // console.log('from parking service', this.slotOneStartTimestamp);
+    // console.log('from parking service', this.slotTwoStartTimestamp);
+    // console.log('from parking service', this.slotThreeStartTimestamp);
+    // console.log('from parking service', this.slotFourStartTimestamp);
+    // console.log('from parking service', this.slotOneTimer$);
+    // console.log('from parking service', this.slotTwoTimer$);
+    // console.log('from parking service', this.slotThreeTimer$);
+    // console.log('from parking service', this.slotFourTimer$);
   }
 }

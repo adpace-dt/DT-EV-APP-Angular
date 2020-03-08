@@ -8,6 +8,8 @@ import { ChargerComponent } from './charger/charger.component';
 import { HeaderComponent } from './header/header.component';
 import { MainComponent } from './main/main.component';
 import { ChargerService } from '../services/charger.service';
+import { ParkingService } from '../services/parking.service';
+import {TimingService} from '../services/timing.service';
 
 @NgModule({
   declarations: [
@@ -21,7 +23,7 @@ import { ChargerService } from '../services/charger.service';
     BrowserModule,
     AppRoutingModule
   ],
-  providers: [ChargerService],
+  providers: [ChargerService, ParkingService, TimingService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
