@@ -4,7 +4,7 @@ import * as moment from 'moment';
 import {ChargerService} from './charger.service';
 import {IChargerData} from '../app/interfaces/icharger-data';
 import {IParkingData} from '../app/interfaces/iparking-data';
-import { TimingService } from "./timing.service";
+import { TimingService } from './timing.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,8 +12,6 @@ import { TimingService } from "./timing.service";
 export class ParkingService implements OnDestroy {
   chargerData$: Subscription;
   chargerData: IChargerData;
-  // chargerData: IChargerData;
-
   parkingData$ = new BehaviorSubject<IParkingData>(null);
 
   slotOneTimeLeft: string;
@@ -34,9 +32,13 @@ export class ParkingService implements OnDestroy {
       .subscribe(
         data => this.chargerData = data
       );
-    this.timingService.getStartTimestamp()
+    this.timingService.getTimingData()
       .subscribe(
         data => {
+          this.slotOneTimeLeft = data.slotOneTimeLeft;
+          this.slotTwoTimeLeft = data.slotTwoTimeLeft;
+          this.slotThreeTimeLeft = data.slotThreeTimeLeft;
+          this.slotFourTimeLeft = data.slotFourTimeLeft;
           this.slotOneStartTimestamp = data.slotOneStartTimestamp;
           this.slotTwoStartTimestamp = data.slotTwoStartTimestamp;
           this.slotThreeStartTimestamp = data.slotThreeStartTimestamp;
@@ -74,11 +76,12 @@ export class ParkingService implements OnDestroy {
     return this.parkingData$.asObservable();
   }
 
-  getChargerData(): void {
+  getChargerData() {
     this.chargerData$ = this.chargerService.getChargerData()
       .subscribe(data => {
         this.chargerData = data;
       });
+    return this.chargerData;
   }
 
   printChargerData() {
@@ -233,15 +236,16 @@ export class ParkingService implements OnDestroy {
   }
 
   parkingSpotClickHandler(payload) {
+    console.log('from parking spot click handler - charger data', this.chargerData);
     // console.log('parkingSpotClickHandler(payload):', payload);
     if (payload.disconnect) {
       console.log('set timer to null in spot: ', payload.spot);
-      this.setTimerToNull(payload.spot);
+      this.timingService.setTimerToNull(payload.spot);
       this.chargerService.setPendingCharger(payload.chargerNumber, payload.spot);
       this.chargerService.setCharger(payload.chargerNumber, 0);
       payload.chargerNumber === 1 ? this.chargerService.setChargerOneSlot(0) : this.chargerService.setChargerTwoSlot(0);
     } else {
-      this.resetChargerStartTimestamp();
+      this.timingService.resetChargerStartTimestamp();
       this.chargerService.setCharger(this.chargerData.pendingChargerNumber, payload.spot);
     }
     this.setParkingData();

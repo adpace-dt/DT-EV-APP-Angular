@@ -1,8 +1,6 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable, Subscription, timer} from 'rxjs';
 import * as moment from 'moment';
-import {ParkingService} from './parking.service';
-import {IParkingData} from '../app/interfaces/iparking-data';
 import {IChargerData} from '../app/interfaces/icharger-data';
 import {TimingService} from './timing.service';
 
@@ -36,7 +34,7 @@ export class ChargerService {
 
   constructor(private timingService: TimingService) {
     this.setChargerData();
-    timingService.getStartTimestamp()
+    timingService.getTimingData()
       .subscribe(
         data => {
           console.log(data);
@@ -46,14 +44,7 @@ export class ChargerService {
           this.slotFourStartTimestamp = data.slotFourStartTimestamp;
           this.setChargerData();
         }
-  )
-    ;
-    // this.parkingService.getParkingData()
-    //   .subscribe(
-    //     data => {
-    //       this.parkingData = data;
-    //       console.log(data);
-    //     });
+      );
   }
 
   getChargerData(): Observable<IChargerData> {
