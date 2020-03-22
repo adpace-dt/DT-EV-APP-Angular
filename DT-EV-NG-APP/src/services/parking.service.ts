@@ -85,26 +85,9 @@ export class ParkingService implements OnDestroy {
       this.chargerService.setCharger(payload.chargerNumber, 0);
       payload.chargerNumber === 1 ? this.chargerService.setChargerOneSlot(0) : this.chargerService.setChargerTwoSlot(0);
     } else {
-      this.timingService.resetChargerStartTimestamp();
+      this.timingService.resetChargerStartTimestamp(this.chargerData);
       this.chargerService.setCharger(this.chargerData.pendingChargerNumber, payload.spot);
     }
     this.setParkingData();
-  }
-
-  consoleLogData() {
-    console.log('parkingData$: ', this.parkingData$.getValue());
-    // console.log('chargerData', this.chargerData);
-    // console.log('from parking service', this.slotOneTimeLeft);
-    // console.log('from parking service', this.slotTwoTimeLeft);
-    // console.log('from parking service', this.slotThreeTimeLeft);
-    // console.log('from parking service', this.slotFourTimeLeft);
-    // console.log('from parking service', this.slotOneStartTimestamp);
-    // console.log('from parking service', this.slotTwoStartTimestamp);
-    // console.log('from parking service', this.slotThreeStartTimestamp);
-    // console.log('from parking service', this.slotFourStartTimestamp);
-    // console.log('from parking service', this.slotOneTimer$);
-    // console.log('from parking service', this.slotTwoTimer$);
-    // console.log('from parking service', this.slotThreeTimer$);
-    // console.log('from parking service', this.slotFourTimer$);
   }
 }

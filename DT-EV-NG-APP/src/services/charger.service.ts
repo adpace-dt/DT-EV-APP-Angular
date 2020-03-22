@@ -22,18 +22,10 @@ export class ChargerService implements OnDestroy {
 
   timingData$: Subscription;
   pendingChargerData$: Subscription;
-  slotOneTimeLeft: string;
-  slotTwoTimeLeft: string;
-  slotThreeTimeLeft: string;
-  slotFourTimeLeft: string;
   slotOneStartTimestamp: any = null;
   slotTwoStartTimestamp: any = null;
   slotThreeStartTimestamp: any = null;
   slotFourStartTimestamp: any = null;
-  slotOneTimer$: Subscription = null;
-  slotTwoTimer$: Subscription = null;
-  slotThreeTimer$: Subscription = null;
-  slotFourTimer$: Subscription = null;
 
   constructor(private timingService: TimingService, private pendingChargerService: PendingChargerService) {
     this.setChargerData();
@@ -52,6 +44,7 @@ export class ChargerService implements OnDestroy {
         data => {
           this.pendingChargerNumber = data.pendingChargerNumber;
           this.pendingChargerSlot = data.pendingChargerSlot;
+          this.setChargerData();
         }
       );
   }
@@ -235,10 +228,6 @@ export class ChargerService implements OnDestroy {
       }
     }
     this.setChargerData();
-  }
-
-  consoleLogData() {
-    console.log(this.chargerDataSubject.getValue());
   }
 
   chargerClickHandler($event) {
