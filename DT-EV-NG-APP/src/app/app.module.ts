@@ -9,6 +9,7 @@ import { MainComponent } from './main/main.component';
 import { ChargerService } from '../services/charger.service';
 import { ParkingService } from '../services/parking.service';
 import {TimingService} from '../services/timing.service';
+import {PendingChargerService} from '../services/pending-charger.service';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,7 @@ import {TimingService} from '../services/timing.service';
     BrowserModule,
     AppRoutingModule
   ],
-  providers: [ChargerService, ParkingService, TimingService],
+  providers: [ChargerService, ParkingService, TimingService, PendingChargerService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
