@@ -46,4 +46,8 @@ export class MainComponent implements OnDestroy {
   parkingSpotClickHandler(payload) {
     this.parkingService.parkingSpotClickHandler(payload);
   }
+
+  printParkingData() {
+    console.log('parking data', this.parkingData);
+  }
 }

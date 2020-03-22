@@ -1,5 +1,5 @@
 import {Injectable, OnDestroy} from '@angular/core';
-import {BehaviorSubject, Observable, Subscription, timer} from 'rxjs';
+import {BehaviorSubject, Observable, Subscription} from 'rxjs';
 import {ChargerService} from './charger.service';
 import {IChargerData} from '../app/interfaces/icharger-data';
 import {IParkingData} from '../app/interfaces/iparking-data';
@@ -26,6 +26,10 @@ export class ParkingService implements OnDestroy {
   slotTwoTimer$: Subscription = null;
   slotThreeTimer$: Subscription = null;
   slotFourTimer$: Subscription = null;
+  spotOneIsOccupied = false;
+  spotTwoIsOccupied = false;
+  spotThreeIsOccupied = false;
+  spotFourIsOccupied = false;
 
   constructor(private chargerService: ChargerService,
               private timingService: TimingService,
@@ -69,7 +73,11 @@ export class ParkingService implements OnDestroy {
       slotOneTimer$: this.slotOneTimer$,
       slotTwoTimer$: this.slotTwoTimer$,
       slotThreeTimer$: this.slotThreeTimer$,
-      slotFourTimer$: this.slotFourTimer$
+      slotFourTimer$: this.slotFourTimer$,
+      spotOneIsOccupied: this.spotOneIsOccupied,
+      spotTwoIsOccupied: this.spotTwoIsOccupied,
+      spotThreeIsOccupied: this.spotThreeIsOccupied,
+      spotFourIsOccupied: this.spotFourIsOccupied
     };
     this.parkingData$.next(_data);
   }
@@ -87,6 +95,25 @@ export class ParkingService implements OnDestroy {
     } else {
       this.timingService.resetChargerStartTimestamp(this.chargerData);
       this.chargerService.setCharger(this.chargerData.pendingChargerNumber, payload.spot);
+    }
+    this.setParkingData();
+  }
+
+  setSpotIsOccupied(spot: number, isOccupied: boolean) {
+    console.log('setSpotIsOccupied hit...');
+    switch (spot) {
+      case 1:
+        this.spotOneIsOccupied = isOccupied;
+        break;
+      case 2:
+        this.spotTwoIsOccupied = isOccupied;
+        break;
+      case 3:
+        this.spotThreeIsOccupied = isOccupied;
+        break;
+      case 4:
+        this.spotFourIsOccupied = isOccupied;
+        break;
     }
     this.setParkingData();
   }
