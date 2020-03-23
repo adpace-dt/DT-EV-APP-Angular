@@ -18,26 +18,10 @@ export class ChargerService implements OnDestroy {
   slotTwoChargerNumber = 1;
   slotThreeChargerNumber = 2;
   slotFourChargerNumber: number = null;
-
-  timingData$: Subscription;
   pendingChargerData$: Subscription;
-  slotOneStartTimestamp: any = null;
-  slotTwoStartTimestamp: any = null;
-  slotThreeStartTimestamp: any = null;
-  slotFourStartTimestamp: any = null;
 
   constructor(private timingService: TimingService, private pendingChargerService: PendingChargerService) {
     this.setChargerData();
-    this.timingData$ = timingService.getTimingData()
-      .subscribe(
-        data => {
-          this.slotOneStartTimestamp = data.slotOneStartTimestamp;
-          this.slotTwoStartTimestamp = data.slotTwoStartTimestamp;
-          this.slotThreeStartTimestamp = data.slotThreeStartTimestamp;
-          this.slotFourStartTimestamp = data.slotFourStartTimestamp;
-          this.setChargerData();
-        }
-      );
     this.pendingChargerData$ =  pendingChargerService.getPendingChargerData()
       .subscribe(
         data => {
@@ -49,7 +33,6 @@ export class ChargerService implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.timingData$.unsubscribe();
     this.pendingChargerData$.unsubscribe();
   }
 
