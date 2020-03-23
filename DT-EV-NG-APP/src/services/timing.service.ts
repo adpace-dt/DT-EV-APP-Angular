@@ -118,7 +118,6 @@ export class TimingService {
           });
         break;
     }
-
   }
 
   setTimerToNull(spot) {

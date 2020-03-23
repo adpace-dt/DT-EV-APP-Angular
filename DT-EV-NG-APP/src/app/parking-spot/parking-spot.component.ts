@@ -53,8 +53,9 @@ export class ParkingSpotComponent implements OnChanges {
         this.parkingSpotClickOutput.emit(payload);
       }
     } else if (this.pendingChargerSlot) {
+      // tslint:disable-next-line:max-line-length
+      this.parkingService.setSpotIsOccupied(this.pendingChargerSlot, false); // set the parking spot that just lost the charger connection to Unoccupied
       this.parkingService.setSpotIsOccupied(this.spotNumber, true);
-      // this.isOccupied = true;
       const payload = {
         spot: this.spotNumber,
         disconnect: false

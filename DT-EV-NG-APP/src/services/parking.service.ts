@@ -70,14 +70,14 @@ export class ParkingService implements OnDestroy {
       slotTwoStartTimestamp: this.slotTwoStartTimestamp,
       slotThreeStartTimestamp: this.slotThreeStartTimestamp,
       slotFourStartTimestamp: this.slotFourStartTimestamp,
-      slotOneTimer$: this.slotOneTimer$,
-      slotTwoTimer$: this.slotTwoTimer$,
-      slotThreeTimer$: this.slotThreeTimer$,
-      slotFourTimer$: this.slotFourTimer$,
       spotOneIsOccupied: this.spotOneIsOccupied,
       spotTwoIsOccupied: this.spotTwoIsOccupied,
       spotThreeIsOccupied: this.spotThreeIsOccupied,
-      spotFourIsOccupied: this.spotFourIsOccupied
+      spotFourIsOccupied: this.spotFourIsOccupied,
+      slotOneTimer$: this.slotOneTimer$,
+      slotTwoTimer$: this.slotTwoTimer$,
+      slotThreeTimer$: this.slotThreeTimer$,
+      slotFourTimer$: this.slotFourTimer$
     };
     this.parkingData$.next(_data);
   }
@@ -88,6 +88,7 @@ export class ParkingService implements OnDestroy {
 
   parkingSpotClickHandler(payload) {
     if (payload.disconnect) {
+      console.log('disconnect true...');
       this.timingService.setTimerToNull(payload.spot);
       this.pendingChargerService.setPendingCharger(payload.chargerNumber, payload.spot);
       this.chargerService.setCharger(payload.chargerNumber, 0);

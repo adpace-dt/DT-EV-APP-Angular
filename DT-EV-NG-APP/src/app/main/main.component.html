@@ -1,6 +1,5 @@
 <div>
   <p class="info">TAP CAR TO TOGGLE OCCUPIED.<br>TAP CHARGER THEN CAR TO CHARGE.</p>
-  <button (click)="printParkingData()" >print parking data</button>
   <div class="main-container">
     <div class="row">
       <div class="col-40 slotBackground">
@@ -24,7 +23,7 @@
           [pendingChargerSlot]="chargerData.pendingChargerSlot"
           (parkingSpotClickOutput)="parkingSpotClickHandler($event)"
           [timeLeft]="parkingData.slotFourTimeLeft"
-        [isOccupied]="parkingData.spotOneIsOccupied" ></app-parking-spot>
+          [isOccupied]="parkingData.spotFourIsOccupied"></app-parking-spot>
       </div>
     </div>
 
@@ -50,7 +49,7 @@
           [pendingChargerSlot]="chargerData.pendingChargerSlot"
           (parkingSpotClickOutput)="parkingSpotClickHandler($event)"
           [timeLeft]="parkingData.slotThreeTimeLeft"
-        [isOccupied]="parkingData.spotTwoIsOccupied" ></app-parking-spot>
+          [isOccupied]="parkingData.spotThreeIsOccupied"></app-parking-spot>
       </div>
     </div>
 
@@ -76,7 +75,7 @@
           [pendingChargerSlot]="chargerData.pendingChargerSlot"
           (parkingSpotClickOutput)="parkingSpotClickHandler($event)"
           [timeLeft]="parkingData.slotTwoTimeLeft"
-        [isOccupied]="parkingData.spotThreeIsOccupied" ></app-parking-spot>
+          [isOccupied]="parkingData.spotTwoIsOccupied"></app-parking-spot>
       </div>
     </div>
 
@@ -102,7 +101,7 @@
           [pendingChargerSlot]="chargerData.pendingChargerSlot"
           (parkingSpotClickOutput)="parkingSpotClickHandler($event)"
           [timeLeft]="parkingData.slotOneTimeLeft"
-        [isOccupied]="parkingData.spotFourIsOccupied" ></app-parking-spot>
+          [isOccupied]="parkingData.spotOneIsOccupied"></app-parking-spot>
       </div>
     </div>
   </div>

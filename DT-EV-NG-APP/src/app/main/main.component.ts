@@ -1,10 +1,11 @@
-import {Component, OnDestroy, OnInit, OnChanges, SimpleChanges} from '@angular/core';
+import {Component, OnDestroy} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {ChargerService} from '../../services/charger.service';
 import {ParkingService} from '../../services/parking.service';
 import {TimingService} from '../../services/timing.service';
 import {IChargerData} from '../interfaces/icharger-data';
 import {IParkingData} from '../interfaces/iparking-data';
+import {ITiming} from '../interfaces/itiming';
 
 @Component({
   selector: 'app-main',
@@ -17,6 +18,7 @@ export class MainComponent implements OnDestroy {
   timingData$: Subscription;
   chargerData: IChargerData;
   parkingData: IParkingData;
+  timingData: ITiming;
 
   constructor(private chargerService: ChargerService,
               private parkingService: ParkingService,
@@ -31,7 +33,7 @@ export class MainComponent implements OnDestroy {
       });
     this.timingData$ = this.timingService.getTimingData()
       .subscribe(data => {
-        this.parkingData = data;
+        this.timingData = data;
       });
   }
 
@@ -45,9 +47,5 @@ export class MainComponent implements OnDestroy {
 
   parkingSpotClickHandler(payload) {
     this.parkingService.parkingSpotClickHandler(payload);
-  }
-
-  printParkingData() {
-    console.log('parking data', this.parkingData);
   }
 }

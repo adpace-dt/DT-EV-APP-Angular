@@ -9,12 +9,12 @@ export interface IParkingData {
   slotTwoStartTimestamp?: any;
   slotThreeStartTimestamp?: any;
   slotFourStartTimestamp?: any;
-  slotOneTimer$?: Subscription;
-  slotTwoTimer$?: Subscription;
-  slotThreeTimer$?: Subscription;
-  slotFourTimer$?: Subscription;
   spotOneIsOccupied?: boolean;
   spotTwoIsOccupied?: boolean;
   spotThreeIsOccupied?: boolean;
   spotFourIsOccupied?: boolean;
+  slotOneTimer$?: Subscription;
+  slotTwoTimer$?: Subscription;
+  slotThreeTimer$?: Subscription;
+  slotFourTimer$?: Subscription;
 }
