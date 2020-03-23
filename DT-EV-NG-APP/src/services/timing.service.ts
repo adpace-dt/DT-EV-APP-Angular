@@ -2,7 +2,6 @@ import {Injectable} from '@angular/core';
 import * as moment from 'moment';
 import {BehaviorSubject, Observable, Subscription, timer} from 'rxjs';
 import {ITiming} from '../app/interfaces/itiming';
-import {ChargerService} from './charger.service';
 import {IChargerData} from '../app/interfaces/icharger-data';
 import {Injector} from '@angular/core';
 import {PendingChargerService} from './pending-charger.service';
