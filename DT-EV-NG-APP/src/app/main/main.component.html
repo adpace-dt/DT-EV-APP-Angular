@@ -22,7 +22,8 @@
           [chargerTwoSlot]="chargerData.chargerTwoSlot"
           [pendingChargerSlot]="chargerData.pendingChargerSlot"
           (parkingSpotClickOutput)="parkingSpotClickHandler($event)"
-          [timeLeft]="parkingData.slotFourTimeLeft"></app-parking-spot>
+          [timeLeft]="parkingData.slotFourTimeLeft"
+          [isOccupied]="parkingData.spotFourIsOccupied"></app-parking-spot>
       </div>
     </div>
 
@@ -47,7 +48,8 @@
           [chargerTwoSlot]="chargerData.chargerTwoSlot"
           [pendingChargerSlot]="chargerData.pendingChargerSlot"
           (parkingSpotClickOutput)="parkingSpotClickHandler($event)"
-          [timeLeft]="parkingData.slotThreeTimeLeft"></app-parking-spot>
+          [timeLeft]="parkingData.slotThreeTimeLeft"
+          [isOccupied]="parkingData.spotThreeIsOccupied"></app-parking-spot>
       </div>
     </div>
 
@@ -72,7 +74,8 @@
           [chargerTwoSlot]="chargerData.chargerTwoSlot"
           [pendingChargerSlot]="chargerData.pendingChargerSlot"
           (parkingSpotClickOutput)="parkingSpotClickHandler($event)"
-          [timeLeft]="parkingData.slotTwoTimeLeft"></app-parking-spot>
+          [timeLeft]="parkingData.slotTwoTimeLeft"
+          [isOccupied]="parkingData.spotTwoIsOccupied"></app-parking-spot>
       </div>
     </div>
 
@@ -97,7 +100,8 @@
           [chargerTwoSlot]="chargerData.chargerTwoSlot"
           [pendingChargerSlot]="chargerData.pendingChargerSlot"
           (parkingSpotClickOutput)="parkingSpotClickHandler($event)"
-          [timeLeft]="parkingData.slotOneTimeLeft"></app-parking-spot>
+          [timeLeft]="parkingData.slotOneTimeLeft"
+          [isOccupied]="parkingData.spotOneIsOccupied"></app-parking-spot>
       </div>
     </div>
   </div>

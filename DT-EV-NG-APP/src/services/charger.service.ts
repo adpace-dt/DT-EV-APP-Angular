@@ -1,6 +1,5 @@
 import {Injectable, OnDestroy} from '@angular/core';
 import {BehaviorSubject, Observable, Subscription, timer} from 'rxjs';
-import * as moment from 'moment';
 import {IChargerData} from '../app/interfaces/icharger-data';
 import {TimingService} from './timing.service';
 import {PendingChargerService} from './pending-charger.service';

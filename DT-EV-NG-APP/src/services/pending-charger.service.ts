@@ -39,5 +39,4 @@ export class PendingChargerService {
     };
     this.pendingChargerDataSubject.next(_data);
   }
-
 }
